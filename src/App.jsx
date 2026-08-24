@@ -9,14 +9,17 @@ import Voting from "./pages/Voting";
 import Logistics from "./pages/Logistics";
 import LaVaca from "./pages/LaVaca";
 import GuestInvite from "./pages/GuestInvite";
+import Landing from "./pages/Landing";
 
 export default function App() {
   return (
     <PaseoProvider>
       <BrowserRouter>
         <Routes>
+          {/* Pantalla 0: Landing Page */}
+          <Route path="/" element={<Landing />} />
+
           {/* Pantalla 1: Creación */}
-          <Route path="/" element={<CreatePaseo />} />
           <Route path="/crear" element={<CreatePaseo />} />
 
           {/* Pantalla 2: Dashboard del Anfitrión */}
