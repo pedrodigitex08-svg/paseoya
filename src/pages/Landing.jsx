@@ -1,20 +1,25 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import {
   Map,
   Calculator,
   Vote,
   Car,
-  Users,
   CheckCircle2,
   ArrowRight,
   Sparkles,
   Heart,
-  Coffee
+  Coffee,
+  PlusCircle,
+  Link2,
+  Ticket,
+  Receipt,
+  ListChecks
 } from "lucide-react";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-slate-50 font-sans selection:bg-teal-200 selection:text-teal-900">
+    <div className="min-h-screen bg-slate-50 font-sans selection:bg-teal-200 selection:text-teal-900 overflow-x-hidden">
       {/* 🌟 NAVBAR */}
       <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-slate-100">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -31,7 +36,7 @@ export default function Landing() {
               Características
             </a>
             <a href="#how-it-works" className="text-sm font-semibold text-slate-500 hover:text-slate-800 hidden md:block">
-              Cómo Funciona
+              El Paso a Paso
             </a>
             <Link
               to="/crear"
@@ -100,66 +105,82 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* 📱 HOW IT WORKS */}
-      <section id="how-it-works" className="py-20">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
-              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
-                Del "hagamos algo" <br/> al "¡qué buen viaje!" en 3 pasos.
-              </h2>
-              
-              <div className="space-y-6">
-                <Step 
-                  num="1" 
-                  title="Crea el paseo en 1 minuto" 
-                  desc="Ponle nombre, agrega una foto de portada y define el presupuesto base (como la finca)."
-                />
-                <Step 
-                  num="2" 
-                  title="Comparte el Link Mágico" 
-                  desc="Manda el enlace por WhatsApp. Tus amigos se registran con un clic y confirman asistencia."
-                />
-                <Step 
-                  num="3" 
-                  title="Delega y Relájate" 
-                  desc="La app se encarga de recolectar votos, armar el mercado y sacar las cuentas de cuánto le toca a cada uno."
-                />
-              </div>
-            </div>
-            <div className="relative">
-              {/* Mockup decoration */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-teal-200 to-indigo-200 blur-3xl opacity-30 rounded-full" />
-              <div className="relative bg-white p-6 rounded-3xl border border-slate-100 shadow-xl">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                    <div>
-                      <p className="font-extrabold text-slate-800">Factura Desglose</p>
-                      <p className="text-xs text-slate-400 font-mono">Total a pagar</p>
-                    </div>
-                    <span className="text-2xl font-extrabold text-orange-500">$ 120.000</span>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-500">🏡 Finca (Base)</span>
-                      <span className="font-bold text-slate-700">$ 80.000</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-500">🍖 Mercado</span>
-                      <span className="font-bold text-slate-700">$ 25.000</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-500">🚌 Transporte</span>
-                      <span className="font-bold text-slate-700">$ 15.000</span>
-                    </div>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-dashed border-slate-200">
-                    <div className="bg-green-50 text-green-700 text-xs font-bold py-2 rounded-xl text-center flex items-center justify-center gap-2">
-                      <CheckCircle2 size={14} /> ¡Pedro ha pagado!
-                    </div>
-                  </div>
-                </div>
-              </div>
+      {/* 🗺️ THE JOURNEY (NEW HOW IT WORKS) */}
+      <section id="how-it-works" className="py-24 bg-slate-50 overflow-hidden">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center mb-20 space-y-4">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
+              La experiencia PaseoYa
+            </h2>
+            <p className="text-slate-500 text-lg max-w-2xl mx-auto">
+              Diseñamos cada paso para que organizar el parche sea tan divertido como el viaje mismo. Así de fácil funciona:
+            </p>
+          </div>
+
+          <div className="relative">
+            {/* Línea conectora vertical (oculta en móviles, visible en desktop) */}
+            <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-slate-200 -translate-x-1/2 rounded-full" />
+
+            <div className="space-y-12 md:space-y-24">
+              {/* Paso 1 */}
+              <JourneyStep
+                icon={<PlusCircle size={28} className="text-blue-500" />}
+                badgeColor="bg-blue-100 text-blue-700"
+                badgeText="1. Empieza la magia"
+                title="Crea el Paseo"
+                desc="Toma 1 minuto. Ponle un nombre divertido al evento, elige una foto de portada inspiradora y define el presupuesto base (lo que cuesta el alquiler de la finca, por ejemplo). ¡Y listo, ya eres el Host oficial!"
+                align="left"
+              />
+
+              {/* Paso 2 */}
+              <JourneyStep
+                icon={<Link2 size={28} className="text-emerald-500" />}
+                badgeColor="bg-emerald-100 text-emerald-700"
+                badgeText="2. Invita a todos"
+                title="Copia el Link Mágico"
+                desc="Olvídate de pedir correos o números de teléfono uno por uno. El sistema te da un enlace único. Pégalo en el grupo de WhatsApp del parche y deja que la magia ocurra."
+                align="right"
+              />
+
+              {/* Paso 3 */}
+              <JourneyStep
+                icon={<Ticket size={28} className="text-purple-500" />}
+                badgeColor="bg-purple-100 text-purple-700"
+                badgeText="3. RSVP Elegante"
+                title="Tarjeta de Invitación Premium"
+                desc="Cuando tus amigos toquen el enlace de WhatsApp, no verán un formulario aburrido. Verán una tarjeta de invitación hermosa donde pondrán su nombre y confirmarán si van o no. Entran al tablero al instante."
+                align="left"
+              />
+
+              {/* Paso 4 */}
+              <JourneyStep
+                icon={<Vote size={28} className="text-orange-500" />}
+                badgeColor="bg-orange-100 text-orange-700"
+                badgeText="4. Democracia Pura"
+                title="¡A Votar!"
+                desc="¿Para dónde vamos? ¿El próximo puente o a fin de mes? Los invitados proponen lugares y fechas, todos votan con 👍 o 👎, y el sistema muestra claramente quién va ganando sin saturar el chat de mensajes."
+                align="right"
+              />
+
+              {/* Paso 5 */}
+              <JourneyStep
+                icon={<ListChecks size={28} className="text-indigo-500" />}
+                badgeColor="bg-indigo-100 text-indigo-700"
+                badgeText="5. Organización"
+                title="Logística Inteligente"
+                desc="Una vez confirmada la misión, coordina quién lleva carro y cuántos cupos tiene libres, reserva una Van si son muchos, y anoten qué se necesita comprar de mercado. Todo en una misma pantalla."
+                align="left"
+              />
+
+              {/* Paso 6 */}
+              <JourneyStep
+                icon={<Receipt size={28} className="text-rose-500" />}
+                badgeColor="bg-rose-100 text-rose-700"
+                badgeText="6. Finanzas Claras"
+                title="La Vaca Automática"
+                desc="La cereza del pastel. PaseoYa suma el alquiler, el mercado y el transporte (para los que van en el bus), lo divide por el número exacto de confirmados y le da a cada persona un 'recibo' hermoso diciendo exactamente cuánto debe pagar. ¡Y luego marcas quién ya pagó!"
+                align="right"
+              />
             </div>
           </div>
         </div>
@@ -232,16 +253,51 @@ function FeatureCard({ icon, color, title, desc }) {
   );
 }
 
-function Step({ num, title, desc }) {
+function JourneyStep({ icon, badgeColor, badgeText, title, desc, align }) {
+  const isLeft = align === "left";
+  
   return (
-    <div className="flex gap-4">
-      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-teal-100 text-teal-700 font-extrabold flex items-center justify-center">
-        {num}
+    <div className={`relative flex flex-col md:flex-row items-center md:justify-between w-full`}>
+      
+      {/* Icon Node for Desktop (center circle) */}
+      <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-white border-4 border-slate-100 items-center justify-center z-10 shadow-sm">
+        {icon}
       </div>
-      <div>
-        <h4 className="text-lg font-bold text-slate-800 mb-1">{title}</h4>
-        <p className="text-slate-500 text-sm leading-relaxed">{desc}</p>
+
+      {/* Left Space (Empty if aligned right) */}
+      <div className={`hidden md:block w-[45%] ${isLeft ? "opacity-100" : "opacity-0"}`}>
+        {isLeft && <JourneyCard badgeColor={badgeColor} badgeText={badgeText} title={title} desc={desc} />}
       </div>
+
+      {/* Right Space (Empty if aligned left) */}
+      <div className={`hidden md:block w-[45%] ${!isLeft ? "opacity-100" : "opacity-0"}`}>
+        {!isLeft && <JourneyCard badgeColor={badgeColor} badgeText={badgeText} title={title} desc={desc} />}
+      </div>
+
+      {/* Mobile view (Stacked) */}
+      <div className="md:hidden w-full flex gap-4">
+        <div className="flex-shrink-0 mt-1">
+          <div className="w-12 h-12 rounded-full bg-white border-4 border-slate-100 flex items-center justify-center shadow-sm">
+            {React.cloneElement(icon, { size: 20 })}
+          </div>
+        </div>
+        <div className="flex-1 pb-8 border-l-2 border-slate-200 -ml-8 pl-12">
+          <JourneyCard badgeColor={badgeColor} badgeText={badgeText} title={title} desc={desc} />
+        </div>
+      </div>
+      
+    </div>
+  );
+}
+
+function JourneyCard({ badgeColor, badgeText, title, desc }) {
+  return (
+    <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl transition-shadow duration-300">
+      <div className={`inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide mb-4 ${badgeColor}`}>
+        {badgeText}
+      </div>
+      <h3 className="text-2xl font-bold text-slate-800 mb-3 leading-tight">{title}</h3>
+      <p className="text-slate-500 leading-relaxed">{desc}</p>
     </div>
   );
 }
