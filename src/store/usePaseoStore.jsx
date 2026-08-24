@@ -795,7 +795,6 @@ export const usePaseo = create(
           const { bus } = paseo.logistics.transport;
           if (
             !bus.enabled ||
-            !bus.includeInVaca ||
             bus.totalCost <= 0 ||
             bus.assignedParticipants.length === 0
           )

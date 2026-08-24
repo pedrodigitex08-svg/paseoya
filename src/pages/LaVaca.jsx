@@ -212,7 +212,6 @@ function calcBusAddonForPerson(paseo, participantId) {
   const { bus } = paseo.logistics?.transport || { bus: {} };
   if (
     !bus.enabled ||
-    !bus.includeInVaca ||
     bus.totalCost <= 0 ||
     !bus.assignedParticipants
   )
