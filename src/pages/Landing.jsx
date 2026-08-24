@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import {
   Map,
@@ -17,21 +17,21 @@ import {
   ListChecks,
   ChevronRight,
   ThumbsUp,
-  MessageCircle,
-  Share2,
-  Users
+  Users,
+  ShoppingCart,
+  CheckSquare
 } from "lucide-react";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-[#F8FAFC] font-sans selection:bg-teal-200 selection:text-teal-900 overflow-x-hidden">
+    <div className="min-h-screen bg-[#FFFBF7] font-sans selection:bg-orange-200 selection:text-orange-900 overflow-x-hidden">
       <CustomAnimations />
 
-      {/* 🌟 NAVBAR ULTRA PREMIUM */}
-      <nav className="fixed top-0 w-full bg-white/70 backdrop-blur-xl z-50 border-b border-slate-200/50 transition-all">
+      {/* 🌟 NAVBAR ULTRA PREMIUM (ORANGE THEME) */}
+      <nav className="fixed top-0 w-full bg-[#FFFBF7]/80 backdrop-blur-xl z-50 border-b border-orange-100/50 transition-all">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-400 to-indigo-500 flex items-center justify-center shadow-lg shadow-teal-500/20">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/20">
               <Map size={18} className="text-white" />
             </div>
             <span className="font-extrabold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">
@@ -39,12 +39,12 @@ export default function Landing() {
             </span>
           </div>
           <div className="flex items-center gap-6">
-            <a href="#how-it-works" className="text-sm font-semibold text-slate-500 hover:text-slate-900 hidden md:block transition-colors">
+            <a href="#how-it-works" className="text-sm font-semibold text-slate-500 hover:text-orange-600 hidden md:block transition-colors">
               Cómo Funciona
             </a>
             <Link
               to="/crear"
-              className="bg-slate-900 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-slate-800 transition-all hover:shadow-xl hover:shadow-slate-900/20 active:scale-95 flex items-center gap-2"
+              className="bg-orange-500 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-orange-600 transition-all hover:shadow-xl hover:shadow-orange-500/30 active:scale-95 flex items-center gap-2"
             >
               Empezar Gratis <ArrowRight size={16} />
             </Link>
@@ -52,26 +52,26 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* 🚀 HERO SECTION (APPLE STYLE) */}
+      {/* 🚀 HERO SECTION */}
       <section className="relative pt-32 pb-20 px-6 lg:pt-48 lg:pb-32 overflow-hidden">
         {/* Abstract Background Elements */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[500px] bg-gradient-to-b from-teal-100/50 to-transparent blur-3xl -z-10 rounded-full" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[500px] bg-gradient-to-b from-orange-200/40 to-transparent blur-3xl -z-10 rounded-full" />
         
         <div className="max-w-5xl mx-auto text-center space-y-8 relative z-10">
           <div className="animate-fade-in-up">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-200 text-slate-700 text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
-              <Sparkles size={14} className="text-amber-500" /> La revolución de organizar parches
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-orange-200 text-orange-700 text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
+              <Sparkles size={14} className="text-orange-500" /> La revolución de organizar parches
             </div>
             <h1 className="text-6xl md:text-8xl font-extrabold text-slate-900 tracking-tighter leading-[1.1]">
               El fin de los <br className="hidden md:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 via-indigo-500 to-purple-500 animate-gradient-x">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 animate-gradient-x">
                 paseos caóticos.
               </span>
             </h1>
           </div>
           
           <p className="text-xl md:text-2xl text-slate-500 max-w-3xl mx-auto leading-relaxed animate-fade-in-up animation-delay-100 font-medium">
-            Reúne a tus amigos, decide la fecha, cuadra la logística y divide los gastos exactos. Todo en un solo enlace mágico. Sin descargar nada.
+            Reúne a tus amigos, decide la fecha, cuadra la logística y divide los gastos exactos. Todo en un solo enlace mágico y 100% gratuito.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8 animate-fade-in-up animation-delay-200">
@@ -87,13 +87,13 @@ export default function Landing() {
 
         {/* HERO APP PREVIEW */}
         <div className="mt-20 max-w-5xl mx-auto relative animate-fade-in-up animation-delay-300">
-          <div className="absolute inset-0 bg-gradient-to-t from-[#F8FAFC] via-transparent to-transparent z-10 top-1/2" />
-          <div className="rounded-[2.5rem] p-4 bg-white/40 backdrop-blur-2xl border border-white shadow-2xl shadow-slate-200/50">
-            <div className="rounded-[2rem] overflow-hidden border border-slate-200 bg-slate-100 aspect-video relative flex items-center justify-center">
+          <div className="absolute inset-0 bg-gradient-to-t from-[#FFFBF7] via-transparent to-transparent z-10 top-1/2" />
+          <div className="rounded-[2.5rem] p-4 bg-white/40 backdrop-blur-2xl border border-white shadow-2xl shadow-orange-900/10">
+            <div className="rounded-[2rem] overflow-hidden border border-slate-200 bg-slate-50 aspect-video relative flex items-center justify-center">
               {/* Fake UI Dashboard */}
               <div className="absolute inset-0 bg-white">
                 {/* Header */}
-                <div className="h-20 bg-gradient-to-r from-teal-500 to-indigo-600 px-8 flex items-end pb-4">
+                <div className="h-20 bg-gradient-to-r from-orange-500 to-amber-500 px-8 flex items-end pb-4">
                   <div className="w-12 h-12 rounded-xl bg-white/20 mr-4" />
                   <div className="space-y-2 pb-1">
                     <div className="h-4 w-48 bg-white/30 rounded-full" />
@@ -103,7 +103,7 @@ export default function Landing() {
                 {/* Content */}
                 <div className="p-8 grid grid-cols-3 gap-8">
                   <div className="col-span-2 space-y-6">
-                    <div className="h-32 rounded-2xl bg-slate-50 border border-slate-100 flex items-center p-6 gap-6">
+                    <div className="h-32 rounded-2xl bg-orange-50/50 border border-orange-100 flex items-center p-6 gap-6">
                        <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center">
                          <Calculator className="text-orange-500" size={28} />
                        </div>
@@ -114,23 +114,23 @@ export default function Landing() {
                        </div>
                     </div>
                     <div className="grid grid-cols-2 gap-6">
-                      <div className="h-40 rounded-2xl bg-slate-50 border border-slate-100 p-6 flex flex-col justify-between">
-                        <Vote className="text-indigo-400" size={24} />
+                      <div className="h-40 rounded-2xl bg-white border border-slate-100 shadow-sm p-6 flex flex-col justify-between">
+                        <Vote className="text-orange-400" size={24} />
                         <div className="space-y-2">
-                          <div className="h-2 w-full bg-indigo-100 rounded-full overflow-hidden">
-                            <div className="h-full w-[70%] bg-indigo-500 rounded-full" />
+                          <div className="h-2 w-full bg-orange-100 rounded-full overflow-hidden">
+                            <div className="h-full w-[70%] bg-orange-500 rounded-full" />
                           </div>
-                          <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
-                            <div className="h-full w-[30%] bg-slate-400 rounded-full" />
+                          <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                            <div className="h-full w-[30%] bg-slate-300 rounded-full" />
                           </div>
                         </div>
                       </div>
-                      <div className="h-40 rounded-2xl bg-slate-50 border border-slate-100 p-6 flex flex-col justify-between">
-                         <Car className="text-teal-400" size={24} />
+                      <div className="h-40 rounded-2xl bg-white border border-slate-100 shadow-sm p-6 flex flex-col justify-between">
+                         <Car className="text-amber-400" size={24} />
                          <div className="flex -space-x-2">
-                           <div className="w-8 h-8 rounded-full border-2 border-white bg-teal-200" />
-                           <div className="w-8 h-8 rounded-full border-2 border-white bg-indigo-200" />
+                           <div className="w-8 h-8 rounded-full border-2 border-white bg-amber-200" />
                            <div className="w-8 h-8 rounded-full border-2 border-white bg-orange-200" />
+                           <div className="w-8 h-8 rounded-full border-2 border-white bg-red-200" />
                          </div>
                       </div>
                     </div>
@@ -156,52 +156,52 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-24 space-y-4">
             <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
-              Diseñada para que organizar <br className="hidden md:block" /> sea tan bueno como el viaje.
+              Todo el poder de la app, <br className="hidden md:block" /> explicado en 5 pasos.
             </h2>
             <p className="text-slate-500 text-xl max-w-2xl mx-auto">
-              Seis pasos visuales. Sin descargar nada. Todo ocurre en la web y en WhatsApp.
+              Descubre las herramientas exclusivas que hacen de PaseoYa la mejor opción. Funciona directo desde el navegador de tu celular.
             </p>
           </div>
 
           <div className="space-y-32">
             
-            {/* FEATURE 1: Link Magico */}
+            {/* FEATURE 1: Link Magico & Invitaciones */}
             <FeatureBlock 
               align="right"
-              badge="Compartir"
-              badgeColor="text-emerald-600 bg-emerald-100"
+              badge="Invitación & RSVP"
+              badgeColor="text-orange-600 bg-orange-100"
               title="El Link Mágico"
-              desc="Nada de pedir correos o forzar a tus amigos a descargar una app. PaseoYa te genera un enlace único. Lo copias, lo pegas en el grupo de WhatsApp y listo."
-              visual={<WhatsAppMockup />}
-            />
-
-            {/* FEATURE 2: RSVP */}
-            <FeatureBlock 
-              align="left"
-              badge="Invitación"
-              badgeColor="text-purple-600 bg-purple-100"
-              title="Invitaciones Premium"
-              desc="Tus amigos abren el link y ven una tarjeta elegante. Confirman su asistencia con un toque y aparecen instantáneamente en tu panel de control."
+              desc="Nada de pedir correos o descargar apps. Creas el paseo, copias el link y lo envías al grupo de WhatsApp. Tus amigos abren una tarjeta interactiva, confirman su asistencia con un toque y entran al parche de inmediato."
               visual={<RSVPMockup />}
             />
 
-            {/* FEATURE 3: Votación */}
+            {/* FEATURE 2: Votación */}
+            <FeatureBlock 
+              align="left"
+              badge="Votaciones Democráticas"
+              badgeColor="text-amber-600 bg-amber-100"
+              title="Cero peleas en el chat"
+              desc="¿Finca o playa? ¿Este puente o el otro? En la app, cualquier invitado puede proponer fechas y lugares. Todos votan con '👍' o 'No', y el sistema corona automáticamente la opción ganadora mostrándote exactamente quién votó por qué."
+              visual={<VoteMockup />}
+            />
+
+            {/* FEATURE 3: Logística (NUEVO DETALLE) */}
             <FeatureBlock 
               align="right"
-              badge="Democracia"
-              badgeColor="text-orange-600 bg-orange-100"
-              title="Cero peleas en el chat"
-              desc="¿Finca o playa? ¿Este fin de semana o el otro? Todos pueden proponer opciones y votar. El sistema elige al ganador automáticamente y te muestra quién votó por qué."
-              visual={<VoteMockup />}
+              badge="Logística & Menú"
+              badgeColor="text-teal-600 bg-teal-100"
+              title="Transporte y Mercado en Grupo"
+              desc="¿Quién lleva carro? Coordina los vehículos, cuántos cupos libres quedan y divide el costo de la gasolina. Además, armen la lista del mercado de forma colaborativa para que nada se olvide (y todo se cobre)."
+              visual={<LogisticaMockup />}
             />
 
             {/* FEATURE 4: La Vaca */}
             <FeatureBlock 
               align="left"
-              badge="Finanzas"
+              badge="Finanzas Automáticas"
               badgeColor="text-rose-600 bg-rose-100"
               title="La Vaca Perfecta"
-              desc="El terror de todo organizador solucionado. La app suma el alquiler, el transporte y el mercado, lo divide exactamente por los confirmados y te bota un 'recibo' claro y sin errores."
+              desc="El terror de todo organizador, solucionado. La app suma automáticamente la cuota de la finca, los víveres del mercado y tu puesto en el carro (si aplica). Lo divide exactamente y te entrega una factura individual detallada al centavo."
               visual={<VacaMockup />}
             />
 
@@ -209,10 +209,34 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* 🏁 CTA FOOTER (STRIPE STYLE) */}
+      {/* 💬 SOCIAL PROOF (TESTIMONIALS) */}
+      <section className="py-24 bg-orange-50 border-y border-orange-100">
+        <div className="max-w-6xl mx-auto px-6 text-center space-y-12">
+          <h2 className="text-3xl font-extrabold text-slate-800">Diseñada para salvar amistades</h2>
+          <div className="grid md:grid-cols-3 gap-6 text-left">
+            <Testimonial 
+              quote="Por fin dejamos de pelearnos por quién compró el hielo y quién puso el carro. La Vaca automática es una salvación total."
+              author="Carlos M."
+              role="El que siempre organizaba"
+            />
+            <Testimonial 
+              quote="Antes durábamos 3 semanas en el chat decidiendo la fecha. Ahora todos votan en la app y en 2 días ya tenemos todo listo."
+              author="Laura Gómez"
+              role="Usuaria feliz"
+            />
+            <Testimonial 
+              quote="Me encantó ver ese 'recibo' al final diciendo exactamente por qué pagué 85 mil pesos. Súper transparente y justo."
+              author="Andrés F."
+              role="Invitado"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* 🏁 CTA FOOTER */}
       <section className="relative py-32 overflow-hidden bg-slate-900">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay" />
-        <div className="absolute top-0 right-0 -translate-y-12 translate-x-1/3 w-[800px] h-[800px] bg-gradient-to-bl from-teal-500/30 to-indigo-500/0 blur-3xl rounded-full" />
+        <div className="absolute top-0 right-0 -translate-y-12 translate-x-1/3 w-[800px] h-[800px] bg-gradient-to-bl from-orange-500/30 to-amber-500/0 blur-3xl rounded-full" />
         
         <div className="relative max-w-4xl mx-auto px-6 text-center z-10">
           <h2 className="text-5xl md:text-7xl font-extrabold text-white mb-8 tracking-tighter">
@@ -223,9 +247,9 @@ export default function Landing() {
           </p>
           <Link
             to="/crear"
-            className="inline-flex items-center gap-3 px-10 py-5 bg-white text-slate-900 rounded-full font-extrabold text-xl transition-all hover:scale-105 shadow-[0_0_40px_rgba(255,255,255,0.3)]"
+            className="inline-flex items-center gap-3 px-10 py-5 bg-orange-500 text-white rounded-full font-extrabold text-xl transition-all hover:scale-105 hover:bg-orange-600 shadow-[0_0_40px_rgba(249,115,22,0.3)]"
           >
-            Crear Paseo Ahora <Sparkles size={24} className="text-amber-500" />
+            Crear Paseo Ahora <Sparkles size={24} className="text-white" />
           </Link>
         </div>
       </section>
@@ -237,7 +261,7 @@ export default function Landing() {
             <Map size={18} /> PaseoYa © {new Date().getFullYear()}
           </div>
           <div className="flex items-center gap-2">
-            Hecho con <Heart size={14} className="text-rose-500 fill-rose-500 animate-pulse" /> en Colombia para el mundo
+            Hecho con <Heart size={14} className="text-orange-500 fill-orange-500 animate-pulse" /> en Colombia para el mundo
           </div>
         </div>
       </footer>
@@ -258,7 +282,7 @@ function FeatureBlock({ align, badge, badgeColor, title, desc, visual }) {
         <div className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest ${badgeColor}`}>
           {badge}
         </div>
-        <h3 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+        <h3 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
           {title}
         </h3>
         <p className="text-lg text-slate-500 leading-relaxed font-medium">
@@ -272,64 +296,47 @@ function FeatureBlock({ align, badge, badgeColor, title, desc, visual }) {
   );
 }
 
-// ----------------------------------------------------------------------
-// ANIMATED MOCKUPS (PURE CSS & REACT)
-// ----------------------------------------------------------------------
-
-function WhatsAppMockup() {
+function Testimonial({ quote, author, role }) {
   return (
-    <div className="rounded-[2.5rem] bg-slate-50 p-3 shadow-2xl border-4 border-slate-200 transform rotate-2 hover:rotate-0 transition-transform duration-500">
-      <div className="bg-[#EFEAE2] rounded-[2rem] h-[400px] overflow-hidden flex flex-col relative">
-        <div className="bg-[#075E54] text-white p-4 flex items-center gap-3">
-          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-             <Users size={16} />
-          </div>
-          <p className="font-bold">El Mejor Parche 🌴</p>
-        </div>
-        <div className="p-4 flex-1 flex flex-col gap-4 justify-end relative">
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagmonds-light.png')] opacity-20" />
-          
-          <div className="self-end bg-[#DCF8C6] p-3 rounded-2xl rounded-tr-none shadow-sm max-w-[85%] relative animate-pop-in">
-            <p className="text-sm text-slate-800 mb-1">
-              ¡Muchachos! Ya armé el paseo a la finca. Entren aquí, confirmen asistencia y voten la fecha 👇
-            </p>
-            <div className="bg-[#128C7E]/10 rounded-xl p-2 border-l-4 border-[#128C7E] mt-2 flex items-center gap-2">
-              <Map size={16} className="text-[#128C7E]" />
-              <p className="text-xs font-bold text-[#128C7E] truncate">paseoya.com/el-mejor-parche</p>
-            </div>
-            <p className="text-[10px] text-slate-400 text-right mt-1">10:42 AM ✓✓</p>
-          </div>
-          
-          <div className="self-start bg-white p-3 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] relative animate-pop-in animation-delay-500">
-            <p className="text-sm text-slate-800">
-              Ufff tremendo, ya mismo entro y confirmo 🔥
-            </p>
-            <p className="text-[10px] text-slate-400 text-right mt-1">10:43 AM</p>
-          </div>
-        </div>
+    <div className="p-6 rounded-3xl bg-white border border-orange-100 shadow-sm space-y-4">
+      <div className="flex gap-1 text-orange-400">
+        {[...Array(5)].map((_, i) => (
+          <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+        ))}
+      </div>
+      <p className="text-slate-600 text-sm leading-relaxed italic">"{quote}"</p>
+      <div>
+        <p className="font-bold text-slate-900 text-sm">{author}</p>
+        <p className="text-xs text-slate-400">{role}</p>
       </div>
     </div>
   );
 }
 
+// ----------------------------------------------------------------------
+// ANIMATED MOCKUPS (PURE CSS & REACT) - DETAILED EXPERIENCES
+// ----------------------------------------------------------------------
+
 function RSVPMockup() {
   return (
-    <div className="rounded-3xl bg-gradient-to-br from-purple-500 to-indigo-600 p-8 shadow-2xl shadow-purple-500/20 transform -rotate-2 hover:rotate-0 transition-transform duration-500 text-center relative overflow-hidden">
+    <div className="rounded-3xl bg-gradient-to-br from-orange-400 to-amber-500 p-6 shadow-2xl shadow-orange-500/20 transform -rotate-2 hover:rotate-0 transition-transform duration-500 text-center relative overflow-hidden h-[360px] flex items-center">
       <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30" />
-      <div className="relative z-10 bg-white p-6 rounded-2xl shadow-xl">
-        <div className="w-16 h-16 mx-auto bg-purple-100 rounded-full flex items-center justify-center mb-4">
-          <Ticket className="text-purple-600" size={32} />
+      <div className="relative z-10 w-full bg-white p-6 rounded-2xl shadow-xl animate-float">
+        <div className="w-14 h-14 mx-auto bg-orange-100 rounded-full flex items-center justify-center mb-3">
+          <Ticket className="text-orange-500" size={28} />
         </div>
-        <h4 className="text-xl font-extrabold text-slate-800">Paseo de Fin de Semestre</h4>
-        <p className="text-slate-500 text-sm mt-2 mb-6">Estás invitado por Carlos.</p>
+        <h4 className="text-lg font-extrabold text-slate-800">Paseo de Fin de Semestre</h4>
+        <p className="text-slate-500 text-xs mt-1 mb-5">Estás invitado por Carlos.</p>
         
         <div className="space-y-3">
-          <div className="h-10 bg-slate-50 border border-slate-200 rounded-xl flex items-center px-4 text-slate-400 text-sm">
-            Escribe tu nombre...
+          <div className="h-10 bg-slate-50 border border-slate-200 rounded-xl flex items-center px-4 text-slate-400 text-sm shadow-inner">
+            <span className="animate-typing border-r-2 border-slate-400 pr-1 overflow-hidden whitespace-nowrap">Laura Gómez</span>
           </div>
           <button className="w-full bg-slate-900 text-white font-bold py-3 rounded-xl shadow-lg relative overflow-hidden group">
             <span className="relative z-10">¡Sí, confirmo asistencia! 🎉</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-500 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-amber-500 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
           </button>
         </div>
       </div>
@@ -339,20 +346,27 @@ function RSVPMockup() {
 
 function VoteMockup() {
   return (
-    <div className="rounded-3xl bg-white p-6 shadow-2xl border border-slate-100 transform rotate-1 hover:rotate-0 transition-transform duration-500">
+    <div className="rounded-3xl bg-white p-6 shadow-2xl border border-slate-100 transform rotate-1 hover:rotate-0 transition-transform duration-500 h-[360px] flex flex-col justify-center">
       <h4 className="font-extrabold text-slate-800 flex items-center gap-2 mb-4">
-        <Vote className="text-orange-500" size={20} /> Votación de Fechas
+        <Vote className="text-orange-500" size={20} /> Votación de Destinos
       </h4>
       <div className="space-y-4">
+        {/* Lugar Ganador */}
         <div className="p-4 rounded-2xl border-2 border-amber-400 bg-amber-50 relative overflow-hidden">
           <div className="absolute top-0 right-0 bg-amber-400 text-white text-[10px] font-bold px-2 py-1 rounded-bl-xl">
             Ganando
           </div>
-          <p className="font-bold text-slate-800 text-sm mb-3">15 Oct - 18 Oct</p>
+          <p className="font-bold text-slate-800 text-sm mb-3">Finca en Melgar 🌴</p>
           <div className="space-y-2">
-            <div className="flex justify-between text-xs font-bold text-slate-600">
-              <span className="flex items-center gap-1 text-green-600"><CheckCircle2 size={12}/> Sí (80%)</span>
-              <span>8 votos</span>
+            <div className="flex justify-between items-center text-xs font-bold text-slate-600">
+              <span className="flex items-center gap-1 text-green-600">
+                <ThumbsUp size={12}/> 8 Votos
+              </span>
+              <div className="flex -space-x-1">
+                <div className="w-4 h-4 rounded-full bg-slate-300 border border-white" />
+                <div className="w-4 h-4 rounded-full bg-slate-400 border border-white" />
+                <div className="w-4 h-4 rounded-full bg-slate-500 border border-white" />
+              </div>
             </div>
             <div className="h-2 bg-white rounded-full overflow-hidden">
               <div className="h-full bg-green-500 rounded-full animate-grow-width w-[80%]" />
@@ -360,12 +374,17 @@ function VoteMockup() {
           </div>
         </div>
         
+        {/* Lugar Perdedor */}
         <div className="p-4 rounded-2xl border border-slate-100 bg-slate-50">
-          <p className="font-bold text-slate-800 text-sm mb-3">22 Oct - 25 Oct</p>
+          <p className="font-bold text-slate-800 text-sm mb-3">Cabaña en Guatapé ⛰️</p>
           <div className="space-y-2">
-            <div className="flex justify-between text-xs font-bold text-slate-600">
-              <span className="flex items-center gap-1 text-green-600"><CheckCircle2 size={12}/> Sí (20%)</span>
-              <span>2 votos</span>
+            <div className="flex justify-between items-center text-xs font-bold text-slate-600">
+              <span className="flex items-center gap-1 text-green-600">
+                <ThumbsUp size={12}/> 2 Votos
+              </span>
+              <div className="flex -space-x-1">
+                <div className="w-4 h-4 rounded-full bg-slate-300 border border-white" />
+              </div>
             </div>
             <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
               <div className="h-full bg-green-400 rounded-full animate-grow-width w-[20%]" />
@@ -377,41 +396,101 @@ function VoteMockup() {
   );
 }
 
+function LogisticaMockup() {
+  return (
+    <div className="rounded-3xl bg-slate-50 p-6 shadow-2xl border border-slate-200 transform -rotate-1 hover:rotate-0 transition-transform duration-500 h-[360px] flex flex-col justify-center space-y-4">
+      
+      {/* Transporte */}
+      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 animate-slide-in">
+        <div className="flex items-center gap-2 mb-3">
+          <Car className="text-teal-500" size={18} />
+          <p className="font-bold text-slate-800 text-sm">Transporte</p>
+        </div>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs font-bold text-slate-700">Camioneta de Andrés</p>
+            <p className="text-[10px] text-slate-400">Cupos: 3/5 llenos</p>
+          </div>
+          <div className="flex gap-1">
+            <div className="w-6 h-6 rounded-md bg-teal-100 flex items-center justify-center text-[10px] font-bold text-teal-700">A</div>
+            <div className="w-6 h-6 rounded-md bg-teal-100 flex items-center justify-center text-[10px] font-bold text-teal-700">M</div>
+            <div className="w-6 h-6 rounded-md bg-teal-100 flex items-center justify-center text-[10px] font-bold text-teal-700">L</div>
+            <div className="w-6 h-6 rounded-md bg-slate-100 border border-dashed border-slate-300 animate-pulse" />
+          </div>
+        </div>
+      </div>
+
+      {/* Mercado */}
+      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 animate-slide-in animation-delay-200">
+        <div className="flex items-center gap-2 mb-3">
+          <ShoppingCart className="text-orange-500" size={18} />
+          <p className="font-bold text-slate-800 text-sm">Mercado Compartido</p>
+        </div>
+        <div className="space-y-2">
+          {/* Item 1 - Checked */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <CheckSquare size={14} className="text-orange-500" />
+              <p className="text-xs font-medium text-slate-400 line-through">Carne para asado</p>
+            </div>
+            <p className="text-xs font-bold text-slate-400">$ 60.000</p>
+          </div>
+          {/* Item 2 - Animating to Checked */}
+          <div className="flex items-center justify-between relative overflow-hidden group">
+            <div className="flex items-center gap-2">
+              <div className="relative w-[14px] h-[14px]">
+                <div className="absolute inset-0 border-2 border-slate-300 rounded-[3px] animate-hide-box" />
+                <CheckSquare size={14} className="text-orange-500 absolute inset-0 opacity-0 animate-show-check" />
+              </div>
+              <p className="text-xs font-medium text-slate-700 relative">
+                Cervezas y Hielo
+                <span className="absolute top-1/2 left-0 w-full h-[1px] bg-slate-400 scale-x-0 origin-left animate-strike" />
+              </p>
+            </div>
+            <p className="text-xs font-bold text-slate-700">$ 45.000</p>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  );
+}
+
 function VacaMockup() {
   return (
-    <div className="rounded-3xl bg-white shadow-2xl border border-slate-100 transform -rotate-1 hover:rotate-0 transition-transform duration-500 flex flex-col overflow-hidden relative">
-      <div className="h-2 w-full bg-rose-500" />
-      <div className="p-6">
-        <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-dashed border-slate-200">
+    <div className="rounded-3xl bg-white shadow-2xl border border-slate-100 transform rotate-1 hover:rotate-0 transition-transform duration-500 flex flex-col overflow-hidden relative h-[360px]">
+      <div className="h-2 w-full bg-orange-500" />
+      <div className="p-6 flex-1 flex flex-col">
+        <div className="flex items-center justify-between mb-5 pb-3 border-b-2 border-dashed border-slate-200">
           <div className="flex items-center gap-2">
-            <Receipt size={20} className="text-slate-400" />
+            <Receipt size={18} className="text-slate-400" />
             <p className="text-xs font-extrabold text-slate-700 uppercase tracking-widest">Factura Desglose</p>
           </div>
-          <span className="text-[10px] bg-slate-100 px-2 py-1 rounded font-mono text-slate-500">HOY</span>
+          <span className="text-[10px] bg-slate-100 px-2 py-1 rounded font-mono text-slate-500">RESUMEN</span>
         </div>
         
-        <div className="space-y-4 font-mono text-sm">
+        <div className="space-y-4 font-mono text-sm flex-1">
           <div className="flex justify-between">
             <span className="text-slate-500">🏡 Finca & Base</span>
             <span className="font-bold text-slate-800">$ 65.000</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-500">🍖 Mercado (12 pers)</span>
+            <span className="text-slate-500">🍖 Mercado</span>
             <span className="font-bold text-slate-800">$ 25.000</span>
           </div>
-          <div className="flex justify-between text-teal-600">
-            <span className="font-bold">🚌 Transporte (Van)</span>
+          <div className="flex justify-between text-teal-600 bg-teal-50 px-2 py-1 rounded -mx-2">
+            <span className="font-bold">🚌 Cupo Van</span>
             <span className="font-bold">+$ 15.000</span>
           </div>
           
           <div className="pt-4 mt-2 border-t-2 border-dashed border-slate-200 flex justify-between items-center">
             <span className="font-extrabold text-xs uppercase tracking-widest text-slate-400">Total a Pagar</span>
-            <span className="text-2xl font-extrabold text-orange-500 animate-pulse-slow">$ 105.000</span>
+            <span className="text-2xl font-extrabold text-orange-600 animate-pulse-slow">$ 105.000</span>
           </div>
         </div>
         
-        <div className="mt-6 bg-green-100 text-green-700 p-3 rounded-xl flex items-center justify-center gap-2 text-sm font-bold">
-          <CheckCircle2 size={16} /> Cuota pagada. ¡Gracias!
+        <div className="mt-4 bg-green-50 text-green-700 p-2.5 rounded-xl flex items-center justify-center gap-2 text-xs font-bold border border-green-100">
+          <CheckCircle2 size={14} /> Cuota pagada por Pedro
         </div>
       </div>
       
@@ -438,25 +517,50 @@ function CustomAnimations() {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
       }
-      @keyframes pop-in {
-        0% { opacity: 0; transform: scale(0.9) translateY(10px); }
-        70% { transform: scale(1.02); }
-        100% { opacity: 1; transform: scale(1) translateY(0); }
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
       }
       @keyframes grow-width {
         from { width: 0; }
       }
       @keyframes pulse-slow {
         0%, 100% { opacity: 1; }
-        50% { opacity: 0.7; }
+        50% { opacity: 0.6; }
       }
+      @keyframes typing {
+        from { width: 0; }
+        to { width: 100%; }
+      }
+      @keyframes slide-in {
+        from { opacity: 0; transform: translateX(20px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      @keyframes strike {
+        0% { transform: scaleX(0); }
+        50% { transform: scaleX(0); }
+        100% { transform: scaleX(1); }
+      }
+      @keyframes hide-box {
+        0% { opacity: 1; }
+        49% { opacity: 1; }
+        50% { opacity: 0; }
+        100% { opacity: 0; }
+      }
+      @keyframes show-check {
+        0% { opacity: 0; transform: scale(0.5); }
+        49% { opacity: 0; transform: scale(0.5); }
+        50% { opacity: 1; transform: scale(1.2); }
+        70% { transform: scale(0.9); }
+        100% { opacity: 1; transform: scale(1); }
+      }
+
       .animate-fade-in-up {
         animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         opacity: 0;
       }
-      .animate-pop-in {
-        animation: pop-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        opacity: 0;
+      .animate-float {
+        animation: float 4s ease-in-out infinite;
       }
       .animate-grow-width {
         animation: grow-width 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -464,18 +568,31 @@ function CustomAnimations() {
       .animate-pulse-slow {
         animation: pulse-slow 3s ease-in-out infinite;
       }
+      .animate-typing {
+        display: inline-block;
+        animation: typing 2s steps(20, end) infinite alternate;
+      }
+      .animate-slide-in {
+        animation: slide-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+      }
+      .animate-strike {
+        animation: strike 3s ease-in-out infinite;
+      }
+      .animate-hide-box {
+        animation: hide-box 3s ease-in-out infinite;
+      }
+      .animate-show-check {
+        animation: show-check 3s ease-in-out infinite;
+      }
+      
       .animation-delay-100 { animation-delay: 100ms; }
       .animation-delay-200 { animation-delay: 200ms; }
       .animation-delay-300 { animation-delay: 300ms; }
       .animation-delay-500 { animation-delay: 500ms; }
       
-      html {
-        scroll-behavior: smooth;
-      }
-      
-      .perspective-1000 {
-        perspective: 1000px;
-      }
+      html { scroll-behavior: smooth; }
+      .perspective-1000 { perspective: 1000px; }
     `}} />
   );
 }
