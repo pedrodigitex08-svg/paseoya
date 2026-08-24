@@ -18,7 +18,8 @@ import {
   ChevronRight,
   ThumbsUp,
   MessageCircle,
-  Share2
+  Share2,
+  Users
 } from "lucide-react";
 
 export default function Landing() {
