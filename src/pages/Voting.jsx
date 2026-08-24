@@ -78,6 +78,7 @@ function DateVoteCard({
   votes,
   userVote,
   totalParticipants,
+  participants,
   isLeader,
   isWinner,
   isVotingLocked,
@@ -151,7 +152,8 @@ function DateVoteCard({
               {votes.yes} voto{votes.yes !== 1 ? "s" : ""} · {yesWidth}%
             </span>
           </div>
-          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+          <AvatarList userIds={votes.yesUsers} participants={participants} />
+          <div className="h-2 bg-slate-100 rounded-full overflow-hidden mt-1.5">
             <div
               className="h-full bg-green-400 rounded-full transition-all duration-500"
               style={{ width: `${yesWidth}%` }}
@@ -168,7 +170,8 @@ function DateVoteCard({
               {votes.no} voto{votes.no !== 1 ? "s" : ""} · {noWidth}%
             </span>
           </div>
-          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+          <AvatarList userIds={votes.noUsers} participants={participants} />
+          <div className="h-2 bg-slate-100 rounded-full overflow-hidden mt-1.5">
             <div
               className="h-full bg-red-400 rounded-full transition-all duration-500"
               style={{ width: `${noWidth}%` }}
@@ -234,6 +237,7 @@ function PlaceVoteCard({
   isVotingLocked,
   onVote,
   onRemove,
+  participants,
 }) {
   const colors = PLACE_COLORS[index % PLACE_COLORS.length];
   const totalVotes = votes.likes + votes.dislikes;
@@ -305,14 +309,16 @@ function PlaceVoteCard({
         <div className="flex items-center gap-3 mt-3 pt-3 border-t border-slate-50">
           <div className="flex items-center gap-1.5">
             <ThumbsUp size={13} className="text-green-500" />
-            <span className="text-sm font-bold text-slate-700">
+            <span className="text-sm font-bold text-slate-700 flex items-center gap-2">
               {votes.likes}
+              <AvatarList userIds={votes.likesUsers} participants={participants} />
             </span>
           </div>
           <div className="flex items-center gap-1.5">
             <ThumbsDown size={13} className="text-red-400" />
-            <span className="text-sm font-bold text-slate-700">
+            <span className="text-sm font-bold text-slate-700 flex items-center gap-2">
               {votes.dislikes}
+              <AvatarList userIds={votes.dislikesUsers} participants={participants} />
             </span>
           </div>
           <span className="text-[10px] text-slate-300 flex-1 text-right">
@@ -979,6 +985,7 @@ export default function Voting() {
                     votes={getDateVotes(paseo, date.id)}
                     userVote={getUserDateVote(paseo, date.id, currentUser.id)}
                     totalParticipants={paseo.participants.length}
+                    participants={paseo.participants}
                     isLeader={
                       index === 0 &&
                       getDateVotes(paseo, date.id).yes > 0 &&
@@ -1047,6 +1054,7 @@ export default function Voting() {
                     isVotingLocked={isLocationLocked}
                     onVote={votePlace}
                     onRemove={removePlace}
+                      participants={paseo.participants}
                   />
                 ))}
               </div>
