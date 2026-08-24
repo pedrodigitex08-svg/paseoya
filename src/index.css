@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-orange: #F97316;
+  --color-brand-orange-dark: #EA6C0A;
+  --color-brand-orange-light: #FED7AA;
+  --color-brand-teal: #0D9488;
+  --color-brand-teal-dark: #0B7A6E;
+  --color-brand-teal-light: #99F6E4;
+  --color-surface: #F8FAFC;
+  --color-surface-card: #FFFFFF;
+  --color-neutral-900: #0F172A;
+  --color-neutral-700: #334155;
+  --color-neutral-500: #64748B;
+  --color-neutral-300: #CBD5E1;
+  --color-neutral-100: #F1F5F9;
+  --color-success: #22C55E;
+  --color-danger: #EF4444;
+  --color-warning: #F59E0B;
+
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+
+  --shadow-card: 0 4px 24px -4px rgba(15, 23, 42, 0.10);
+  --shadow-card-hover: 0 12px 40px -8px rgba(15, 23, 42, 0.18);
+  --shadow-orange: 0 8px 32px -4px rgba(249, 115, 22, 0.35);
+  --shadow-teal: 0 8px 32px -4px rgba(13, 148, 136, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-surface);
+  color: var(--color-neutral-900);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100dvh;
+}
+
+#root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-300);
+  border-radius: 99px;
+}
+
+/* Gradient text utility */
+.text-gradient-orange {
+  background: linear-gradient(135deg, #F97316, #FBBF24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-teal {
+  background: linear-gradient(135deg, #0D9488, #06B6D4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Gradient button — hardcoded so Tailwind JIT never misses it */
+.btn-gradient {
+  background: linear-gradient(135deg, #F97316 0%, #FBBF24 100%);
+}
+
+/* Animated background blobs */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.25;
+  animation: blobFloat 8s ease-in-out infinite;
+}
+
+@keyframes blobFloat {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  33%       { transform: translateY(-20px) scale(1.05); }
+  66%       { transform: translateY(10px) scale(0.97); }
+}
+
+/* Button press animation */
+.btn-press {
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.btn-press:active {
+  transform: scale(0.96);
+}
+
+/* Input focus ring */
+.input-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+}
+
+/* Shimmer loading effect */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Slide-in animation */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up {
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-slide-up-delay-1 { animation-delay: 0.06s; }
+.animate-slide-up-delay-2 { animation-delay: 0.12s; }
+.animate-slide-up-delay-3 { animation-delay: 0.18s; }
+.animate-slide-up-delay-4 { animation-delay: 0.24s; }
+.animate-slide-up-delay-5 { animation-delay: 0.30s; }
+
+/* Pulse dot */
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(1.4); }
+}
+.animate-pulse-dot {
+  animation: pulseDot 1.5s ease-in-out infinite;
+}
+
+/* Bottom nav safe area */
+.bottom-nav {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
