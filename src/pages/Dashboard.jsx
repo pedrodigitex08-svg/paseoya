@@ -11,6 +11,7 @@ import {
   Lock,
   Unlock,
   ShieldAlert,
+  Trash2,
 } from "lucide-react";
 import BottomNav from "../components/layout/BottomNav";
 
@@ -26,7 +27,7 @@ export default function Dashboard() {
   const { slug } = useParams();
   const navigate = useNavigate();
   // 🔄 Cambiamos deletePaseoFromCloud por updatePaseo
-  const { state, loadPaseoFromCloud, updatePaseo } = usePaseo();
+  const { state, loadPaseoFromCloud, updatePaseo, removeParticipant } = usePaseo();
   const paseo = state.activePaseo;
 
   const [copied, setCopied] = useState(false);
@@ -262,7 +263,7 @@ export default function Dashboard() {
             {paseo.participants?.map((p) => (
               <div
                 key={p.id}
-                className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl"
+                className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl relative group"
               >
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold shadow-inner">
                   {p.name.charAt(0).toUpperCase()}
@@ -275,6 +276,19 @@ export default function Dashboard() {
                     ¡Asistencia confirmada!
                   </p>
                 </div>
+                {p.id !== "host_1" && (
+                  <button
+                    onClick={() => {
+                      if(window.confirm(`¿Seguro que quieres eliminar a ${p.name}? Esto reajustará La Vaca para todos.`)) {
+                        removeParticipant(p.id);
+                      }
+                    }}
+                    className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                    title="Eliminar invitado"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                )}
               </div>
             ))}
           </div>

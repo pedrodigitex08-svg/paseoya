@@ -833,20 +833,26 @@ export const usePaseo = create(
         },
 
         getDateVotes: (paseo, dateId) => {
-          const v = Object.values(paseo?.votes?.dates?.[dateId] || {});
+          const dict = paseo?.votes?.dates?.[dateId] || {};
+          const v = Object.values(dict);
           return {
             yes: v.filter((x) => x === "yes").length,
             no: v.filter((x) => x === "no").length,
+            yesUsers: Object.keys(dict).filter(k => dict[k] === "yes"),
+            noUsers: Object.keys(dict).filter(k => dict[k] === "no"),
           };
         },
         getUserDateVote: (paseo, dateId, userId) =>
           paseo?.votes?.dates?.[dateId]?.[userId] ?? null,
 
         getPlaceVotes: (paseo, placeId) => {
-          const v = Object.values(paseo?.votes?.places?.[placeId] || {});
+          const dict = paseo?.votes?.places?.[placeId] || {};
+          const v = Object.values(dict);
           return {
             likes: v.filter((x) => x === "like").length,
             dislikes: v.filter((x) => x === "dislike").length,
+            likesUsers: Object.keys(dict).filter(k => dict[k] === "like"),
+            dislikesUsers: Object.keys(dict).filter(k => dict[k] === "dislike"),
           };
         },
         getUserPlaceVote: (paseo, placeId, userId) =>

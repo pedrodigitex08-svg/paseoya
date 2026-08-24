@@ -20,6 +20,28 @@ import Button from "../components/ui/Button";
 
 // ─────────────────────────────────────────────
 // HELPERS
+
+const AvatarList = ({ userIds, participants }) => {
+  if (!userIds || userIds.length === 0 || !participants) return null;
+  return (
+    <div className="flex -space-x-1.5 mt-1">
+      {userIds.map(id => {
+        const p = participants.find(x => x.id === id);
+        if (!p) return null;
+        return (
+          <div
+            key={id}
+            className="w-5 h-5 rounded-full bg-slate-200 border border-white flex items-center justify-center text-[8px] font-bold text-slate-600 shadow-sm"
+            title={p.name}
+          >
+            {p.name.charAt(0).toUpperCase()}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 // ─────────────────────────────────────────────
 const formatDate = (str) => {
   if (!str) return "—";
