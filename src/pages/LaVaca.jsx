@@ -6,7 +6,7 @@ import {
   Circle,
   Link2,
   Plus,
-  X,
+  X, Settings,
   TrendingUp,
   Copy,
   ArrowRight,
@@ -205,11 +205,74 @@ function calcAdjustedTotalBudget(paseo) {
   return (paseo.finance?.totalBudget || 0) + marketReal;
 }
 
-function calcBaseCuota(paseo) {
-  const active =
-    paseo.participants?.filter((p) => p.status !== "cancelled").length || 0;
-  return active === 0 ? 0 : calcAdjustedTotalBudget(paseo) / active;
+
+function getTripDays(paseo) {
+  if (paseo?.isSameDay) return 1;
+  const dates = paseo?.tentativeDates?.[0];
+  if (dates?.startDate && dates?.endDate) {
+    const start = new Date(dates.startDate);
+    const end = new Date(dates.endDate);
+    const diffTime = Math.abs(end - start);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    return diffDays > 0 ? diffDays : 1;
+  }
+  return 1;
 }
+
+function calcParticipantBaseCuota(paseo, participantId) {
+  if (!paseo) return 0;
+  
+  const activeParticipants = paseo.participants?.filter(p => p.status !== "cancelled") || [];
+  if (activeParticipants.length === 0) return 0;
+
+  const maxDays = getTripDays(paseo);
+  const ingredients = paseo.logistics?.ingredients || [];
+  
+  const liquorCost = ingredients
+    .filter(i => i.category === "Bebidas")
+    .reduce((sum, item) => sum + (item.actualCost || item.estimatedCost || 0), 0);
+    
+  const generalMarket = ingredients
+    .filter(i => i.category !== "Bebidas")
+    .reduce((sum, item) => sum + (item.actualCost || item.estimatedCost || 0), 0);
+    
+  const baseBudget = paseo.finance?.totalBudget || 0;
+  const totalGeneral = baseBudget + generalMarket;
+
+  let totalDaysAll = 0;
+  let totalDrinkers = 0;
+
+  activeParticipants.forEach(p => {
+    const days = p.daysStayed ?? maxDays;
+    const drinks = p.drinksAlcohol ?? true;
+    totalDaysAll += days;
+    if (drinks) totalDrinkers += 1;
+  });
+
+  const costPerDay = totalDaysAll > 0 ? totalGeneral / totalDaysAll : 0;
+  const costPerDrinker = totalDrinkers > 0 ? liquorCost / totalDrinkers : 0;
+
+  let myDays = maxDays;
+  let myDrinks = true;
+
+  if (participantId) {
+    const me = activeParticipants.find(p => p.id === participantId);
+    if (me) {
+      myDays = me.daysStayed ?? maxDays;
+      myDrinks = me.drinksAlcohol ?? true;
+    }
+  }
+
+  const myBase = myDays * costPerDay;
+  const myLiquor = myDrinks ? costPerDrinker : 0;
+  
+  return myBase + myLiquor;
+}
+
+function calcBaseCuota(paseo) {
+  return calcParticipantBaseCuota(paseo, null); // Legacy wrapper / default max cuota
+}
+
 
 function calcBusAddonForPerson(paseo, participantId) {
   const { bus } = paseo.logistics?.transport || { bus: {} };
@@ -785,10 +848,11 @@ function ParticipantPayRow({
   onToggle,
   currentUser,
   isLocked,
+  onOpenSettings,
 }) {
   const [expanded, setExpanded] = useState(false);
   const isActive = participant.status !== "cancelled";
-  const baseCuota = calcBaseCuota(paseo);
+  const baseCuota = calcParticipantBaseCuota(paseo, participant?.id || currentUser?.id);
   const busAddon = calcBusAddonForPerson(paseo, participant.id);
   const totalCuota = baseCuota + busAddon;
   const hasBusAddon = busAddon > 0;
@@ -798,12 +862,30 @@ function ParticipantPayRow({
 
   const baseBudget = paseo.finance?.totalBudget || 0;
   const ingredients = paseo.logistics?.ingredients || [];
-  const marketReal = ingredients.reduce(
-    (sum, item) => sum + (item.actualCost || item.estimatedCost || 0),
-    0
-  );
-  const myBaseBudget = activeCount > 0 ? baseBudget / activeCount : 0;
-  const myMarket = activeCount > 0 ? marketReal / activeCount : 0;
+  
+  const liquorCost = ingredients.filter(i => i.category === "Bebidas").reduce((sum, item) => sum + (item.actualCost || item.estimatedCost || 0), 0);
+  const generalMarket = ingredients.filter(i => i.category !== "Bebidas").reduce((sum, item) => sum + (item.actualCost || item.estimatedCost || 0), 0);
+  const totalGeneral = baseBudget + generalMarket;
+
+  const maxDays = getTripDays(paseo);
+  const activeParticipants = paseo.participants?.filter(p => p.status !== "cancelled") || [];
+  
+  let totalDaysAll = 0;
+  let totalDrinkers = 0;
+  activeParticipants.forEach(p => {
+    totalDaysAll += (p.daysStayed ?? maxDays);
+    if (p.drinksAlcohol !== false) totalDrinkers += 1;
+  });
+
+  const costPerDay = totalDaysAll > 0 ? totalGeneral / totalDaysAll : 0;
+  const costPerDrinker = totalDrinkers > 0 ? liquorCost / totalDrinkers : 0;
+
+  const myDays = participant.daysStayed ?? maxDays;
+  const myDrinks = participant.drinksAlcohol ?? true;
+
+  const myBaseBudget = (myDays * costPerDay) * (baseBudget / (totalGeneral || 1));
+  const myMarket = (myDays * costPerDay) * (generalMarket / (totalGeneral || 1)) + (myDrinks ? costPerDrinker : 0);
+
 
   return (
     <div
@@ -841,6 +923,21 @@ function ParticipantPayRow({
                 ANFITRIÓN
               </span>
             )}
+
+            {currentUser?.id === paseo.creator && (
+              <button 
+                onClick={(e) => { e.stopPropagation(); onOpenSettings(participant); }}
+                className="p-1 text-slate-400 hover:text-indigo-500 transition-colors rounded-full hover:bg-indigo-50"
+              >
+                <Settings size={12} />
+              </button>
+            )}
+            <div className="w-full mt-0.5 flex gap-2 text-[10px] text-slate-400">
+              <span>{participant.daysStayed ?? getTripDays(paseo)} das</span>
+              <span>&middot;</span>
+              <span>{participant.drinksAlcohol !== false ? "🍸 Toma licor" : "🚫 Sin licor"}</span>
+            </div>
+
             {participant.status === "pending" && (
               <span className="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full">
                 PENDIENTE
@@ -1175,6 +1272,81 @@ const getLabels = (paseo) => {
   return { lblAlojamiento, lblMercado, lblMercadoMini, lblPdfHospedaje, lblPdfMercado, isShortEvent };
 };
 
+
+function ParticipantSettingsModal({ participant, paseo, onClose }) {
+  const [days, setDays] = useState(participant?.daysStayed ?? getTripDays(paseo));
+  const [drinks, setDrinks] = useState(participant?.drinksAlcohol ?? true);
+
+  const handleSave = () => {
+    const updatedParticipants = paseo.participants.map(p => 
+      p.id === participant.id 
+        ? { ...p, daysStayed: days, drinksAlcohol: drinks } 
+        : p
+    );
+    usePaseo.getState().updatePaseo(paseo.slug, { participants: updatedParticipants });
+    onClose();
+  };
+
+  if (!participant) return null;
+
+  const maxDays = getTripDays(paseo);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-sm sm:items-center p-4">
+      <div className="bg-white w-full max-w-sm rounded-3xl p-6 shadow-xl animate-in slide-in-from-bottom-10 sm:slide-in-from-bottom-0 sm:zoom-in-95">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="font-extrabold text-slate-800 text-lg">Ajustar Cuota</h3>
+          <button onClick={onClose} className="p-2 text-slate-400 bg-slate-100 rounded-full">
+            <X size={16} />
+          </button>
+        </div>
+        
+        <p className="text-sm font-bold text-slate-600 mb-4">{participant.name}</p>
+
+        <div className="space-y-6">
+          <div className="space-y-3">
+            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Días de Asistencia</label>
+            <div className="flex items-center justify-between bg-slate-50 p-3 rounded-2xl">
+              <button 
+                onClick={() => setDays(d => Math.max(1, d - 1))}
+                className="w-10 h-10 bg-white rounded-xl shadow-sm text-slate-600 font-bold text-lg disabled:opacity-50"
+                disabled={days <= 1}
+              >-</button>
+              <span className="font-extrabold text-slate-700">{days} {days === 1 ? 'día' : 'días'}</span>
+              <button 
+                onClick={() => setDays(d => Math.min(maxDays, d + 1))}
+                className="w-10 h-10 bg-white rounded-xl shadow-sm text-slate-600 font-bold text-lg disabled:opacity-50"
+                disabled={days >= maxDays}
+              >+</button>
+            </div>
+            <p className="text-[10px] text-slate-400 text-center">Máximo {maxDays} días (duración del paseo)</p>
+          </div>
+
+          <div className="flex items-center justify-between bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100/50">
+            <div>
+              <p className="text-sm font-bold text-slate-700">Toma Licor / Bebidas</p>
+              <p className="text-[10px] text-slate-500 mt-0.5">Participa en la vaca de bebidas</p>
+            </div>
+            <button 
+              onClick={() => setDrinks(!drinks)}
+              className={`w-12 h-6 rounded-full transition-colors relative flex items-center p-1 ${drinks ? "bg-indigo-500" : "bg-slate-300"}`}
+            >
+              <div className={`w-4 h-4 bg-white rounded-full transition-transform ${drinks ? "translate-x-6" : "translate-x-0"}`} />
+            </button>
+          </div>
+
+          <button 
+            onClick={handleSave}
+            className="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl active:scale-[0.98] transition-transform"
+          >
+            Guardar Ajustes
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function LaVaca() {
   const navigate = useNavigate();
   const { slug } = useParams();
@@ -1223,6 +1395,7 @@ export default function LaVaca() {
     paseo?.participants?.filter((p) => p.status !== "cancelled") || [];
   const validIds = new Set(activePartic.map((p) => p.id));
   const currentUser = state.currentUser;
+  const [settingsParticipant, setSettingsParticipant] = useState(null);
 
   const isLocked = paseo?.estado === "finalizado";
 
@@ -1295,7 +1468,7 @@ export default function LaVaca() {
     0
   );
   const recaudoPct = calcRecaudo(paseo);
-  const baseCuota = calcBaseCuota(paseo);
+  const baseCuota = calcParticipantBaseCuota(paseo, participant?.id || currentUser?.id);
   const myTransport = calcBusAddonForPerson(paseo, currentUser?.id);
   const myTotal = baseCuota + myTransport;
   const paidCount = activePartic.filter((p) => p.hasPaid).length;
@@ -1568,7 +1741,7 @@ export default function LaVaca() {
       doc.setFont("helvetica", "bold");
       doc.setTextColor(...slate800);
       doc.text(p.name, margin + 3, y + 2);
-      const cuota = calcBaseCuota(paseo) + calcBusAddonForPerson(paseo, p.id);
+      const cuota = calcParticipantBaseCuota(paseo, p.id) + calcBusAddonForPerson(paseo, p.id);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(...slate400);
       doc.text(formatCOP(cuota), margin + 80, y + 2);
@@ -1621,7 +1794,7 @@ export default function LaVaca() {
   // 💬 COBRAR SIN PENA (WhatsApp)
   // ─────────────────────────────────────────────
   const handleWhatsAppReminder = (participant) => {
-    const cuota = calcBaseCuota(paseo) + calcBusAddonForPerson(paseo, participant.id);
+    const cuota = calcParticipantBaseCuota(paseo, participant.id) + calcBusAddonForPerson(paseo, participant.id);
     const nombre = participant.name.split(" ")[0];
     const msg = encodeURIComponent(
       `Hola ${nombre}! Te recuerdo con carino (y sin pena!) que tu cuota para *${paseo.name}* es de *${formatCOP(cuota)}*.\n\nCuando puedas mandame la platica para cerrar la vaca!\n\n_Enviado desde PaseoYa - paseoya.vercel.app_`
@@ -1937,6 +2110,7 @@ export default function LaVaca() {
                     onToggle={togglePayment}
                     currentUser={currentUser}
                     isLocked={isLocked}
+                      onOpenSettings={setSettingsParticipant}
                   />
                 ))}
             </div>
@@ -1999,7 +2173,7 @@ export default function LaVaca() {
                 {activePartic
                   .filter((p) => !p.hasPaid)
                   .map((p) => {
-                    const cuota = calcBaseCuota(paseo) + calcBusAddonForPerson(paseo, p.id);
+                    const cuota = calcParticipantBaseCuota(paseo, p.id) + calcBusAddonForPerson(paseo, p.id);
                     return (
                       <div key={p.id} className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -2216,6 +2390,7 @@ export default function LaVaca() {
                         debt={groupDebt}
                         onSettle={handleSettleGroupedExpense}
                         isLocked={isLocked}
+                      onOpenSettings={setSettingsParticipant}
                       />
                     ))
                   )}
@@ -2602,6 +2777,7 @@ export default function LaVaca() {
               value={paseo.finance?.paymentLinks?.nequi}
               onChange={(v) => updatePaymentLinks({ nequi: v })}
               isLocked={isLocked}
+                      onOpenSettings={setSettingsParticipant}
             />
             <PaymentLinkCard
               label="Daviplata"
@@ -2611,6 +2787,7 @@ export default function LaVaca() {
               value={paseo.finance?.paymentLinks?.daviplata}
               onChange={(v) => updatePaymentLinks({ daviplata: v })}
               isLocked={isLocked}
+                      onOpenSettings={setSettingsParticipant}
             />
             <PaymentLinkCard
               label="Tus llave Bre-B"
@@ -2620,6 +2797,7 @@ export default function LaVaca() {
               value={paseo.finance?.paymentLinks?.breb}
               onChange={(v) => updatePaymentLinks({ breb: v })}
               isLocked={isLocked}
+                      onOpenSettings={setSettingsParticipant}
             />
           </div>
         </section>
@@ -2687,6 +2865,7 @@ export default function LaVaca() {
                     onSettle={() => {}}
                     onRemove={() => {}}
                     isLocked={isLocked}
+                      onOpenSettings={setSettingsParticipant}
                   />
                 ))
               )}
@@ -2700,6 +2879,7 @@ export default function LaVaca() {
                   onSettle={toggleDebtSettled}
                   onRemove={removeDebt}
                   isLocked={isLocked}
+                      onOpenSettings={setSettingsParticipant}
                 />
               ))}
               {settled.length > 0 && (
@@ -2715,6 +2895,7 @@ export default function LaVaca() {
                         onSettle={toggleDebtSettled}
                         onRemove={removeDebt}
                         isLocked={isLocked}
+                      onOpenSettings={setSettingsParticipant}
                       />
                     ))}
                   </div>
@@ -2725,6 +2906,13 @@ export default function LaVaca() {
         </section>
       </div>
 
+      {settingsParticipant && (
+        <ParticipantSettingsModal 
+          participant={settingsParticipant} 
+          paseo={paseo}
+          onClose={() => setSettingsParticipant(null)}
+        />
+      )}
       <BottomNav />
     </div>
   );
