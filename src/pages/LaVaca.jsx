@@ -928,7 +928,7 @@ function ParticipantPayRow({
               </span>
             )}
 
-            {currentUser?.id === paseo.creator && (
+            {!isLocked && (
               <button 
                 onClick={(e) => { e.stopPropagation(); onOpenSettings(participant); }}
                 className="p-1 text-slate-400 hover:text-indigo-500 transition-colors rounded-full hover:bg-indigo-50"
