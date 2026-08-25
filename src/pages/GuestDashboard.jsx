@@ -35,6 +35,8 @@ const CATEGORY_STYLE = {
   ciudad: { from: "#A78BFA", to: "#7C3AED", label: "Ciudad" },
   rumba: { from: "#F472B6", to: "#E11D48", label: "Rumba / Bar" },
   restaurante: { from: "#FB923C", to: "#EA580C", label: "Restaurante" },
+  asado: { from: "#EF4444", to: "#B91C1C", label: "Asado" },
+  regalo: { from: "#A855F7", to: "#7E22CE", label: "Regalo" },
 };
 
 // ─────────────────────────────────────────────
@@ -439,7 +441,10 @@ export default function GuestDashboard() {
 
   // 🦎 LÓGICA CAMALEÓNICA (Restaurante/Rumba vs Paseo Regular)
   const isShortEvent =
-    paseo.category === "rumba" || paseo.category === "restaurante";
+    paseo.category === "rumba" ||
+    paseo.category === "restaurante" ||
+    paseo.category === "asado" ||
+    paseo.category === "regalo";
   const catStyle = CATEGORY_STYLE[paseo.category] || CATEGORY_STYLE.finca;
   const orgPct = calcOrgPercentage(paseo);
   const recaudoPct = calcRecaudo(paseo);

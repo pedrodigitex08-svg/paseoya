@@ -16,6 +16,8 @@ import {
   Sparkles,
   Check,
   User,
+  Flame,
+  Gift,
 } from "lucide-react";
 import { usePaseo, createPaseoTemplate } from "../store/usePaseoStore";
 
@@ -76,6 +78,24 @@ const CATEGORIES = [
     grad: "from-orange-400 to-red-500",
     bg: "bg-orange-50",
     text: "text-orange-600",
+  },
+  {
+    id: "asado",
+    label: "Asado",
+    emoji: "🔥",
+    icon: Flame,
+    grad: "from-red-400 to-red-600",
+    bg: "bg-red-50",
+    text: "text-red-600",
+  },
+  {
+    id: "regalo",
+    label: "Regalo",
+    emoji: "🎁",
+    icon: Gift,
+    grad: "from-purple-400 to-purple-600",
+    bg: "bg-purple-50",
+    text: "text-purple-600",
   },
 ];
 
@@ -187,24 +207,43 @@ export default function CreatePaseo() {
   // 🦎 Lógica de Formulario Camaleón
   const isShortEvent =
     formData.categoria?.id === "rumba" ||
-    formData.categoria?.id === "restaurante";
+    formData.categoria?.id === "restaurante" ||
+    formData.categoria?.id === "asado" ||
+    formData.categoria?.id === "regalo";
 
-  const labelName = isShortEvent ? "Motivo de la salida" : "Nombre del Plan";
-  const placeholderName = isShortEvent
-    ? "Ej: Cumpleaños de Carlos"
-    : "Ej: Paseo a Melgar";
+  let labelName = "Nombre del Plan";
+  let placeholderName = "Ej: Paseo a Melgar";
+  if (formData.categoria?.id === "regalo") {
+    labelName = "Para quién es el regalo";
+    placeholderName = "Ej: Cumpleaños de Valentina";
+  } else if (formData.categoria?.id === "asado") {
+    labelName = "Motivo del Asado";
+    placeholderName = "Ej: Domingo familiar";
+  } else if (isShortEvent) {
+    labelName = "Motivo de la salida";
+    placeholderName = "Ej: Cumpleaños de Carlos";
+  }
 
-  const labelLocation = isShortEvent
-    ? "Nombre del Bar o Restaurante"
-    : "Destino / Lugar";
-  const placeholderLocation = isShortEvent
-    ? "Ej: Andrés Carne de Res"
-    : "Ej: Melgar, Airbnb Casa Blanca";
+  let labelLocation = "Destino / Lugar";
+  let placeholderLocation = "Ej: Melgar, Airbnb Casa Blanca";
+  if (formData.categoria?.id === "regalo") {
+    labelLocation = "Lugar de entrega";
+    placeholderLocation = "Ej: Oficina 302";
+  } else if (isShortEvent) {
+    labelLocation = "Lugar o ubicación";
+    placeholderLocation = "Ej: Andrés Carne de Res";
+  }
 
-  const labelBudget = isShortEvent
-    ? "Cover o Consumo estimado"
-    : "Presupuesto / Cuota Base";
-  const labelDate = isShortEvent ? "Fecha de la salida" : "Día del parche";
+  let labelBudget = "Presupuesto / Cuota Base";
+  if (formData.categoria?.id === "regalo") {
+    labelBudget = "Meta del Regalo (Total)";
+  } else if (formData.categoria?.id === "asado") {
+    labelBudget = "Presupuesto de Carnes y Bebidas";
+  } else if (isShortEvent) {
+    labelBudget = "Cover o Consumo estimado";
+  }
+
+  const labelDate = isShortEvent ? "Fecha del evento" : "Día del parche";
 
   const isStep2Valid =
     formData.nombrePaseo.length >= 3 &&
@@ -269,7 +308,10 @@ export default function CreatePaseo() {
                   key={cat.id}
                   onClick={() => {
                     const isShort =
-                      cat.id === "rumba" || cat.id === "restaurante";
+                      cat.id === "rumba" ||
+                      cat.id === "restaurante" ||
+                      cat.id === "asado" ||
+                      cat.id === "regalo";
                     setFormData((prev) => ({
                       ...prev,
                       categoria: cat,

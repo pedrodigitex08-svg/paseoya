@@ -1242,7 +1242,36 @@ export default function LaVaca() {
   }
 
   const isShortEvent =
-    paseo.category === "rumba" || paseo.category === "restaurante";
+    paseo.category === "rumba" ||
+    paseo.category === "restaurante" ||
+    paseo.category === "asado" ||
+    paseo.category === "regalo";
+  let lblAlojamiento = "🏠 Alojamiento & Base";
+  let lblMercado = "🛒 Comida y Mercado";
+  let lblMercadoMini = "🛒 Mercado (Menú)";
+  let lblPdfHospedaje = "Hospedaje Base:";
+  let lblPdfMercado = "Mercado / Menu:";
+
+  if (paseo.category === "regalo") {
+    lblAlojamiento = "🎁 Meta del Regalo";
+    lblMercado = "🛍️ Gastos Adicionales";
+    lblMercadoMini = "🛍️ Gastos Extras";
+    lblPdfHospedaje = "Meta del Regalo:";
+    lblPdfMercado = "Gastos Adicionales:";
+  } else if (paseo.category === "asado") {
+    lblAlojamiento = "🔥 Presupuesto Asado";
+    lblMercado = "🧊 Bebidas y Extras";
+    lblMercadoMini = "🧊 Bebidas/Extras";
+    lblPdfHospedaje = "Presupuesto Asado:";
+    lblPdfMercado = "Extras (Bebidas, etc):";
+  } else if (isShortEvent) {
+    lblAlojamiento = "💸 Consumo Base";
+    lblMercado = "🍸 Extras / Propinas";
+    lblMercadoMini = "🍸 Extras / Propinas";
+    lblPdfHospedaje = "Consumo Base:";
+    lblPdfMercado = "Extras / Propinas:";
+  }
+
 
   const adjustedTotalBudget = calcAdjustedTotalBudget(paseo);
   const ingredients = paseo.logistics?.ingredients || [];
@@ -1490,9 +1519,9 @@ export default function LaVaca() {
     doc.text("RESUMEN FINANCIERO", margin + 4, y + 7);
     doc.setFontSize(10);
     doc.setTextColor(...slate800);
-    doc.text("Hospedaje Base:", margin + 4, y + 16);
+    doc.text(lblPdfHospedaje, margin + 4, y + 16);
     doc.text(formatCOP(paseo.finance?.totalBudget || 0), pageW - margin - 4, y + 16, { align: "right" });
-    doc.text("Mercado / Menu:", margin + 4, y + 24);
+    doc.text(lblPdfMercado, margin + 4, y + 24);
     doc.text(formatCOP(marketReal), pageW - margin - 4, y + 24, { align: "right" });
     doc.setDrawColor(...orange);
     doc.setLineWidth(0.4);
@@ -1768,7 +1797,7 @@ export default function LaVaca() {
                   )}
                 </div>
                 <div className="flex justify-between items-center text-white/90 text-sm">
-                  <span>🛒 Mercado (Menú)</span>
+                  <span>{lblMercadoMini}</span>
                   <span className="font-semibold text-white">
                     {formatCOP(marketReal)}
                   </span>
