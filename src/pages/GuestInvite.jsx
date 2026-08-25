@@ -91,7 +91,7 @@ function SuccessToast({ name, visible }) {
 export default function GuestInvite() {
   const navigate = useNavigate();
   const { slug } = useParams();
-  const { state, loadPaseoFromCloud, savePaseoToCloud, addParticipant } =
+  const { state, loadPaseoFromCloud, savePaseoToCloud, addParticipant, setCurrentUser } =
     usePaseo();
 
   console.log("DEBUG: Slug recibido:", slug);
@@ -200,10 +200,11 @@ export default function GuestInvite() {
     setConfirming(true);
 
     try {
+      const newGuestId = "guest_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
+      
       // 1. Agregamos el participante localmente en Zustand
       addParticipant({
-        id:
-          "guest_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+        id: newGuestId,
         name: trimmed,
         role: "guest",
         status: "confirmed",
@@ -211,7 +212,14 @@ export default function GuestInvite() {
         joinedAt: new Date().toISOString(),
       });
 
-      // 2. Extraemos el paseo YA actualizado para enviarlo a Supabase de manera segura (evitamos stale closures)
+      // 2. Registramos la identidad del invitado localmente
+      setCurrentUser({
+        id: newGuestId,
+        name: trimmed,
+        role: "guest",
+      });
+
+      // 3. Extraemos el paseo YA actualizado para enviarlo a Supabase de manera segura (evitamos stale closures)
       const updatedPaseo = usePaseo.getState().state.activePaseo;
 
       // 3. Guardamos el paseo en la nube con el nuevo invitado antes de avanzar
