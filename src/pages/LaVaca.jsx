@@ -1287,7 +1287,7 @@ function ParticipantSettingsModal({ participant, paseo, onClose }) {
         ? { ...p, daysStayed: days, drinksAlcohol: drinks } 
         : p
     );
-    usePaseo.getState().updatePaseo(paseo.slug, { participants: updatedParticipants });
+    usePaseo.getState().updatePaseo(paseo.id, { participants: updatedParticipants });
     onClose();
   };
 
