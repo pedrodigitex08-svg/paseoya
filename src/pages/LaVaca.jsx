@@ -1245,7 +1245,8 @@ export default function LaVaca() {
     paseo.category === "rumba" ||
     paseo.category === "restaurante" ||
     paseo.category === "asado" ||
-    paseo.category === "regalo";
+    paseo.category === "regalo" ||
+    paseo.category === "futbol";
   let lblAlojamiento = "🏠 Alojamiento & Base";
   let lblMercado = "🛒 Comida y Mercado";
   let lblMercadoMini = "🛒 Mercado (Menú)";

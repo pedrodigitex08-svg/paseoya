@@ -18,6 +18,7 @@ import {
   User,
   Flame,
   Gift,
+  Trophy,
 } from "lucide-react";
 import { usePaseo, createPaseoTemplate } from "../store/usePaseoStore";
 
@@ -96,6 +97,15 @@ const CATEGORIES = [
     grad: "from-purple-400 to-purple-600",
     bg: "bg-purple-50",
     text: "text-purple-600",
+  },
+  {
+    id: "futbol",
+    label: "Fútbol 5",
+    emoji: "⚽",
+    icon: Trophy,
+    grad: "from-emerald-400 to-green-600",
+    bg: "bg-emerald-50",
+    text: "text-emerald-600",
   },
 ];
 
@@ -209,11 +219,20 @@ export default function CreatePaseo() {
     formData.categoria?.id === "rumba" ||
     formData.categoria?.id === "restaurante" ||
     formData.categoria?.id === "asado" ||
-    formData.categoria?.id === "regalo";
+    formData.categoria?.id === "regalo" ||
+    formData.categoria?.id === "futbol";
 
   let labelName = "Nombre del Plan";
   let placeholderName = "Ej: Paseo a Melgar";
-  if (formData.categoria?.id === "regalo") {
+  if (formData.categoria?.id === "futbol") {
+    labelName = "Nombre del Partido";
+    placeholderName = "Ej: Los Malos vs Los Peores";
+  } else if (formData.categoria?.id === "futbol") {
+    labelLocation = "Cancha / Sede";
+    placeholderLocation = "Ej: Canchas Campín 5";
+  } else if (formData.categoria?.id === "futbol") {
+    labelBudget = "Costo Cancha + Árbitro";
+  } else if (formData.categoria?.id === "regalo") {
     labelName = "Para quién es el regalo";
     placeholderName = "Ej: Cumpleaños de Valentina";
   } else if (formData.categoria?.id === "asado") {
@@ -226,7 +245,15 @@ export default function CreatePaseo() {
 
   let labelLocation = "Destino / Lugar";
   let placeholderLocation = "Ej: Melgar, Airbnb Casa Blanca";
-  if (formData.categoria?.id === "regalo") {
+  if (formData.categoria?.id === "futbol") {
+    labelName = "Nombre del Partido";
+    placeholderName = "Ej: Los Malos vs Los Peores";
+  } else if (formData.categoria?.id === "futbol") {
+    labelLocation = "Cancha / Sede";
+    placeholderLocation = "Ej: Canchas Campín 5";
+  } else if (formData.categoria?.id === "futbol") {
+    labelBudget = "Costo Cancha + Árbitro";
+  } else if (formData.categoria?.id === "regalo") {
     labelLocation = "Lugar de entrega";
     placeholderLocation = "Ej: Oficina 302";
   } else if (isShortEvent) {
@@ -235,7 +262,15 @@ export default function CreatePaseo() {
   }
 
   let labelBudget = "Presupuesto / Cuota Base";
-  if (formData.categoria?.id === "regalo") {
+  if (formData.categoria?.id === "futbol") {
+    labelName = "Nombre del Partido";
+    placeholderName = "Ej: Los Malos vs Los Peores";
+  } else if (formData.categoria?.id === "futbol") {
+    labelLocation = "Cancha / Sede";
+    placeholderLocation = "Ej: Canchas Campín 5";
+  } else if (formData.categoria?.id === "futbol") {
+    labelBudget = "Costo Cancha + Árbitro";
+  } else if (formData.categoria?.id === "regalo") {
     labelBudget = "Meta del Regalo (Total)";
   } else if (formData.categoria?.id === "asado") {
     labelBudget = "Presupuesto de Carnes y Bebidas";
@@ -311,7 +346,8 @@ export default function CreatePaseo() {
                       cat.id === "rumba" ||
                       cat.id === "restaurante" ||
                       cat.id === "asado" ||
-                      cat.id === "regalo";
+                      cat.id === "regalo" ||
+                      cat.id === "futbol";
                     setFormData((prev) => ({
                       ...prev,
                       categoria: cat,

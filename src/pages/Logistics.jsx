@@ -882,7 +882,9 @@ export default function Logistics() {
     toggleIngredientBought,
   } = usePaseo();
 
-  const [activeTab, setActiveTab] = useState("menu");
+  const isFutbol = activePaseo?.category === "futbol";
+  const isAsado = activePaseo?.category === "asado";
+  const [activeTab, setActiveTab] = useState(isFutbol ? "alineacion" : "menu");
   const [showCarForm, setShowCarForm] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
   const [localDest, setLocalDest] = useState("");
@@ -1058,6 +1060,40 @@ export default function Logistics() {
       )}
 
       <div className="px-4 pt-4 space-y-4">
+        {activeTab === "alineacion" && (
+          <div className="animate-in fade-in duration-300">
+            <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-100 rounded-2xl p-4 mb-5 shadow-sm">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                  <span className="text-xl">👕</span>
+                </div>
+                <div>
+                  <h2 className="text-sm font-extrabold text-emerald-800">
+                    Alineación y Posiciones
+                  </h2>
+                  <p className="text-xs text-emerald-600/80 leading-relaxed">
+                    Anota aquí los equipos, quién tapa, o usa esta lista para el alquiler de la cancha.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <IngredientCategoryCard
+              title="Equipos y Posiciones"
+              icon={ShoppingBasket} 
+              category="Desayuno" 
+              items={activePaseo.logistics?.ingredients?.filter(
+                (i) => i.category === "Desayuno"
+              )}
+              onAdd={handleAddIngredient}
+              onRemove={removeIngredient}
+              onToggle={toggleIngredientBought}
+              isLocked={isLocked}
+              placeholder="Ej: Pedro (Arquero Equipo A)"
+            />
+          </div>
+        )}
+
         {activeTab === "menu" && (
           <div className="animate-in fade-in duration-300">
             <div className="bg-gradient-to-r from-orange-50 to-rose-50 border border-orange-100 rounded-2xl p-4 mb-5 shadow-sm">
@@ -1068,7 +1104,7 @@ export default function Logistics() {
                     ¡El menú del viaje no se arma solo! 🤤
                   </strong>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    Añade los ingredientes, bebidas o antojos en su respectiva
+                    {isAsado ? "Anota las carnes, picadas, y quién lleva el carbón." : "Añade los ingredientes, bebidas o antojos en su respectiva"}
                     categoría.{" "}
                     <span className="text-orange-600 font-bold">
                       ¡Si no anotas tu favorito, te quedas sin él!

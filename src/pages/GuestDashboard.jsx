@@ -37,6 +37,7 @@ const CATEGORY_STYLE = {
   restaurante: { from: "#FB923C", to: "#EA580C", label: "Restaurante" },
   asado: { from: "#EF4444", to: "#B91C1C", label: "Asado" },
   regalo: { from: "#A855F7", to: "#7E22CE", label: "Regalo" },
+  futbol: { from: "#10B981", to: "#047857", label: "Fútbol 5" },
 };
 
 // ─────────────────────────────────────────────
@@ -444,7 +445,8 @@ export default function GuestDashboard() {
     paseo.category === "rumba" ||
     paseo.category === "restaurante" ||
     paseo.category === "asado" ||
-    paseo.category === "regalo";
+    paseo.category === "regalo" ||
+    paseo.category === "futbol";
   const catStyle = CATEGORY_STYLE[paseo.category] || CATEGORY_STYLE.finca;
   const orgPct = calcOrgPercentage(paseo);
   const recaudoPct = calcRecaudo(paseo);
@@ -744,11 +746,11 @@ export default function GuestDashboard() {
               onClick={() => navigate(`/paseo/${slug}/votar`)}
             />
 
-            {!isShortEvent && (
-              <QuickAction
-                icon={ShoppingBasket}
-                label="Logística y Transporte"
-                sublabel="Ingredientes, carros y buseta"
+            {(!isShortEvent || paseo.category === "asado" || paseo.category === "futbol") && (
+                <QuickAction
+                  icon={ShoppingBasket}
+                  label={paseo.category === "futbol" ? "Alineación" : (paseo.category === "asado" ? "¿Quién lleva qué?" : "Logística y Transporte")}
+                sublabel={paseo.category === "futbol" ? "Elige tu posición en la cancha" : (paseo.category === "asado" ? "Organiza carnes y bebidas" : "Ingredientes, carros y buseta")}
                 onClick={() => navigate(`/paseo/${slug}/logistica`)}
               />
             )}

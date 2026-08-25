@@ -10,6 +10,8 @@ export default function BottomNav() {
   const location = useLocation();
   const { slug } = useParams();
   const { state } = usePaseo();
+  const paseo = state.activePaseo;
+  const isShortWithoutLogistics = paseo?.category === "rumba" || paseo?.category === "restaurante" || paseo?.category === "regalo";
 
   // ── Determina la ruta de "Inicio" según el rol del usuario actual ──
   const isHost = state.currentUser?.role === "host";
@@ -65,6 +67,8 @@ export default function BottomNav() {
     return location.pathname.includes(`/${tab.id}`);
   };
 
+  const visibleTabs = isShortWithoutLogistics ? TABS.filter(t => t.id !== "logistica") : TABS;
+
   return (
     <nav
       aria-label="Navegación principal"
@@ -75,7 +79,7 @@ export default function BottomNav() {
       }}
     >
       <div className="flex items-stretch justify-around max-w-lg mx-auto px-1">
-        {TABS.map((tab) => {
+        {visibleTabs.map((tab) => {
           const Icon = tab.icon;
           const active = isActive(tab);
           return (
