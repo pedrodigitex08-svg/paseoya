@@ -12,7 +12,7 @@ export const createPaseoTemplate = (data) => {
 
   // Soporte dual: Data nueva (Súper Formulario) y Data Legacy
   const name = data.nombrePaseo || data.name || "Nuevo Paseo";
-  const category = data.categoria || data.category || "finca";
+  const category = (typeof data.categoria === "object" ? data.categoria.id : data.categoria) || data.category || "finca";
   const createdBy = data.anfitrion || data.createdBy || "Anfitrión";
 
   // 🛡️ BÚSQUEDA AGRESIVA DE CREACIÓN: Atrapa el lugar no importa cómo se llame

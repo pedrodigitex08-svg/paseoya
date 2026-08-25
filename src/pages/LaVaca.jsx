@@ -1131,6 +1131,50 @@ function PaymentLinkCard({
 // ─────────────────────────────────────────────
 // COMPONENTE PRINCIPAL
 // ─────────────────────────────────────────────
+
+const getLabels = (paseo) => {
+  const isShortEvent =
+    paseo?.category === "rumba" ||
+    paseo?.category === "restaurante" ||
+    paseo?.category === "asado" ||
+    paseo?.category === "regalo" ||
+    paseo?.category === "futbol";
+
+  let lblAlojamiento = "🏠 Alojamiento & Base";
+  let lblMercado = "🛒 Comida y Mercado";
+  let lblMercadoMini = "🛒 Mercado (Menú)";
+  let lblPdfHospedaje = "Hospedaje Base:";
+  let lblPdfMercado = "Mercado / Menu:";
+
+  if (paseo?.category === "futbol") {
+    lblAlojamiento = "⚽ Alquiler Cancha";
+    lblMercado = "⏱️ Árbitro e Hidratación";
+    lblMercadoMini = "⏱️ Árbitro e Hidratación";
+    lblPdfHospedaje = "Alquiler Cancha:";
+    lblPdfMercado = "Árbitro e Hidratación:";
+  } else if (paseo?.category === "regalo") {
+    lblAlojamiento = "🎁 Meta del Regalo";
+    lblMercado = "🎀 Gastos Adicionales";
+    lblMercadoMini = "🎀 Gastos Extras";
+    lblPdfHospedaje = "Meta del Regalo:";
+    lblPdfMercado = "Gastos Adicionales:";
+  } else if (paseo?.category === "asado") {
+    lblAlojamiento = "🔥 Presupuesto Asado";
+    lblMercado = "🍻 Bebidas y Extras";
+    lblMercadoMini = "🍻 Bebidas/Extras";
+    lblPdfHospedaje = "Presupuesto Asado:";
+    lblPdfMercado = "Extras (Bebidas, etc):";
+  } else if (isShortEvent) {
+    lblAlojamiento = "💸 Consumo Base";
+    lblMercado = "💰 Extras / Propinas";
+    lblMercadoMini = "💰 Extras / Propinas";
+    lblPdfHospedaje = "Consumo Base:";
+    lblPdfMercado = "Extras / Propinas:";
+  }
+  
+  return { lblAlojamiento, lblMercado, lblMercadoMini, lblPdfHospedaje, lblPdfMercado, isShortEvent };
+};
+
 export default function LaVaca() {
   const navigate = useNavigate();
   const { slug } = useParams();
@@ -1241,43 +1285,7 @@ export default function LaVaca() {
     );
   }
 
-  const isShortEvent =
-    paseo.category === "rumba" ||
-    paseo.category === "restaurante" ||
-    paseo.category === "asado" ||
-    paseo.category === "regalo" ||
-    paseo.category === "futbol";
-  let lblAlojamiento = "🏠 Alojamiento & Base";
-  let lblMercado = "🛒 Comida y Mercado";
-  let lblMercadoMini = "🛒 Mercado (Menú)";
-  let lblPdfHospedaje = "Hospedaje Base:";
-  let lblPdfMercado = "Mercado / Menu:";
-
-  if (paseo.category === "futbol") {
-    lblAlojamiento = "⚽ Alquiler Cancha";
-    lblMercado = "🏃 Árbitro e Hidratación";
-    lblMercadoMini = "🏃 Árbitro e Hidratación";
-    lblPdfHospedaje = "Alquiler Cancha:";
-    lblPdfMercado = "Árbitro e Hidratación:";
-  } else if (paseo.category === "regalo") {
-    lblAlojamiento = "🎁 Meta del Regalo";
-    lblMercado = "🛍️ Gastos Adicionales";
-    lblMercadoMini = "🛍️ Gastos Extras";
-    lblPdfHospedaje = "Meta del Regalo:";
-    lblPdfMercado = "Gastos Adicionales:";
-  } else if (paseo.category === "asado") {
-    lblAlojamiento = "🔥 Presupuesto Asado";
-    lblMercado = "🧊 Bebidas y Extras";
-    lblMercadoMini = "🧊 Bebidas/Extras";
-    lblPdfHospedaje = "Presupuesto Asado:";
-    lblPdfMercado = "Extras (Bebidas, etc):";
-  } else if (isShortEvent) {
-    lblAlojamiento = "💸 Consumo Base";
-    lblMercado = "🍸 Extras / Propinas";
-    lblMercadoMini = "🍸 Extras / Propinas";
-    lblPdfHospedaje = "Consumo Base:";
-    lblPdfMercado = "Extras / Propinas:";
-  }
+  const { lblAlojamiento, lblMercado, lblMercadoMini, lblPdfHospedaje, lblPdfMercado, isShortEvent } = getLabels(paseo);
 
 
   const adjustedTotalBudget = calcAdjustedTotalBudget(paseo);

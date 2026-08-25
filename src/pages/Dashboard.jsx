@@ -38,6 +38,25 @@ export default function Dashboard() {
   // 🔒 Detectamos si el paseo ya fue cerrado
   const isLocked = paseo?.estado === "finalizado";
 
+  let labelLocation = "Destino Original";
+  let labelBudget = "Presupuesto";
+  const isShortEvent = paseo?.category === "rumba" || paseo?.category === "restaurante" || paseo?.category === "asado" || paseo?.category === "regalo" || paseo?.category === "futbol";
+  
+  if (paseo?.category === "futbol") {
+    labelLocation = "Cancha / Sede";
+    labelBudget = "Costo Cancha + Árbitro";
+  } else if (paseo?.category === "regalo") {
+    labelLocation = "Lugar de entrega";
+    labelBudget = "Meta del Regalo (Total)";
+  } else if (paseo?.category === "asado") {
+    labelLocation = "Destino / Lugar";
+    labelBudget = "Presupuesto Carnes/Bebidas";
+  } else if (isShortEvent) {
+    labelLocation = "Lugar o ubicación";
+    labelBudget = "Cover o Consumo estimado";
+  }
+
+
   useEffect(() => {
     let timeoutId;
     if (copied) {
@@ -223,7 +242,7 @@ export default function Dashboard() {
             </div>
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase">
-                Destino Original
+                {labelLocation}
               </p>
               <p className="font-extrabold text-slate-800 text-sm truncate">
                 {paseo.location ||
@@ -239,7 +258,7 @@ export default function Dashboard() {
             </div>
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase">
-                Presupuesto
+                {labelBudget}
               </p>
               <p className="font-extrabold text-slate-800 text-sm">
                 {formatCurrency(paseo.finance?.totalBudget || 0)}

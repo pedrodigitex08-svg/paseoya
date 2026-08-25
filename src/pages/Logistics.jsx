@@ -1089,19 +1089,32 @@ export default function Logistics() {
               </div>
             </div>
             
-            <IngredientCategoryCard
-              title="Equipos y Posiciones"
-              icon={ShoppingBasket} 
-              category="Desayuno" 
-              items={activePaseo.logistics?.ingredients?.filter(
-                (i) => i.category === "Desayuno"
+            
+            <div className="space-y-2 mt-4">
+              {paseo.logistics?.ingredients?.filter(i => i.category === "Snacks").map(item => (
+                <IngredientCard
+                  key={item.id}
+                  item={item}
+                  onToggle={() => toggleIngredientBought(item.id)}
+                  onRemove={() => removeIngredient(item.id)}
+                  onSetActualCost={(id, cost) => {
+                     const upd = paseo.logistics.ingredients.map(i => i.id === id ? {...i, actualCost: cost} : i);
+                     usePaseo.getState().updatePaseo(paseo.slug, { logistics: { ...paseo.logistics, ingredients: upd } });
+                  }}
+                  isLocked={isLocked}
+                />
+              ))}
+              {!isLocked && (
+                <button
+                  onClick={() => setActiveCategoryForModal({ id: "Snacks", label: "Equipos y Posiciones", emoji: "👕", color: "from-emerald-500 to-green-500" })}
+                  className="w-full flex items-center justify-center gap-1.5 py-3 mt-4 rounded-xl text-white font-bold text-xs transition-all active:scale-[0.98] shadow-sm bg-gradient-to-r from-emerald-500 to-green-500"
+                >
+                  <Plus size={16} />
+                  Agregar Jugador / Ítem
+                </button>
               )}
-              onAdd={handleAddIngredient}
-              onRemove={removeIngredient}
-              onToggle={toggleIngredientBought}
-              isLocked={isLocked}
-              placeholder="Ej: Pedro (Arquero Equipo A)"
-            />
+            </div>
+
           </div>
         )}
 
@@ -1123,19 +1136,32 @@ export default function Logistics() {
               </div>
             </div>
             
-            <IngredientCategoryCard
-              title="Equipos y Posiciones"
-              icon={ShoppingBasket}
-              category="Snacks"
-              items={paseo.logistics?.ingredients?.filter(
-                (i) => i.category === "Snacks"
+            
+            <div className="space-y-2 mt-4">
+              {paseo.logistics?.ingredients?.filter(i => i.category === "Snacks").map(item => (
+                <IngredientCard
+                  key={item.id}
+                  item={item}
+                  onToggle={() => toggleIngredientBought(item.id)}
+                  onRemove={() => removeIngredient(item.id)}
+                  onSetActualCost={(id, cost) => {
+                     const upd = paseo.logistics.ingredients.map(i => i.id === id ? {...i, actualCost: cost} : i);
+                     usePaseo.getState().updatePaseo(paseo.slug, { logistics: { ...paseo.logistics, ingredients: upd } });
+                  }}
+                  isLocked={isLocked}
+                />
+              ))}
+              {!isLocked && (
+                <button
+                  onClick={() => setActiveCategoryForModal({ id: "Snacks", label: "Equipos y Posiciones", emoji: "👕", color: "from-emerald-500 to-green-500" })}
+                  className="w-full flex items-center justify-center gap-1.5 py-3 mt-4 rounded-xl text-white font-bold text-xs transition-all active:scale-[0.98] shadow-sm bg-gradient-to-r from-emerald-500 to-green-500"
+                >
+                  <Plus size={16} />
+                  Agregar Jugador / Ítem
+                </button>
               )}
-              onAdd={handleAddIngredient}
-              onRemove={removeIngredient}
-              onToggle={toggleIngredientBought}
-              isLocked={isLocked}
-              placeholder="Ej: Pedro (Arquero Equipo A)"
-            />
+            </div>
+
           </div>
         )}
 
