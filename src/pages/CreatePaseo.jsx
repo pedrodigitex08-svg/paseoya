@@ -227,11 +227,6 @@ export default function CreatePaseo() {
   if (formData.categoria?.id === "futbol") {
     labelName = "Nombre del Partido";
     placeholderName = "Ej: Los Malos vs Los Peores";
-  } else if (formData.categoria?.id === "futbol") {
-    labelLocation = "Cancha / Sede";
-    placeholderLocation = "Ej: Canchas Campín 5";
-  } else if (formData.categoria?.id === "futbol") {
-    labelBudget = "Costo Cancha + Árbitro";
   } else if (formData.categoria?.id === "regalo") {
     labelName = "Para quién es el regalo";
     placeholderName = "Ej: Cumpleaños de Valentina";
@@ -246,13 +241,8 @@ export default function CreatePaseo() {
   let labelLocation = "Destino / Lugar";
   let placeholderLocation = "Ej: Melgar, Airbnb Casa Blanca";
   if (formData.categoria?.id === "futbol") {
-    labelName = "Nombre del Partido";
-    placeholderName = "Ej: Los Malos vs Los Peores";
-  } else if (formData.categoria?.id === "futbol") {
     labelLocation = "Cancha / Sede";
     placeholderLocation = "Ej: Canchas Campín 5";
-  } else if (formData.categoria?.id === "futbol") {
-    labelBudget = "Costo Cancha + Árbitro";
   } else if (formData.categoria?.id === "regalo") {
     labelLocation = "Lugar de entrega";
     placeholderLocation = "Ej: Oficina 302";
@@ -263,12 +253,6 @@ export default function CreatePaseo() {
 
   let labelBudget = "Presupuesto / Cuota Base";
   if (formData.categoria?.id === "futbol") {
-    labelName = "Nombre del Partido";
-    placeholderName = "Ej: Los Malos vs Los Peores";
-  } else if (formData.categoria?.id === "futbol") {
-    labelLocation = "Cancha / Sede";
-    placeholderLocation = "Ej: Canchas Campín 5";
-  } else if (formData.categoria?.id === "futbol") {
     labelBudget = "Costo Cancha + Árbitro";
   } else if (formData.categoria?.id === "regalo") {
     labelBudget = "Meta del Regalo (Total)";

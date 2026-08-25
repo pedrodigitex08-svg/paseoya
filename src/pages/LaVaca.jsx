@@ -1253,7 +1253,13 @@ export default function LaVaca() {
   let lblPdfHospedaje = "Hospedaje Base:";
   let lblPdfMercado = "Mercado / Menu:";
 
-  if (paseo.category === "regalo") {
+  if (paseo.category === "futbol") {
+    lblAlojamiento = "⚽ Alquiler Cancha";
+    lblMercado = "🏃 Árbitro e Hidratación";
+    lblMercadoMini = "🏃 Árbitro e Hidratación";
+    lblPdfHospedaje = "Alquiler Cancha:";
+    lblPdfMercado = "Árbitro e Hidratación:";
+  } else if (paseo.category === "regalo") {
     lblAlojamiento = "🎁 Meta del Regalo";
     lblMercado = "🛍️ Gastos Adicionales";
     lblMercadoMini = "🛍️ Gastos Extras";

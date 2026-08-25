@@ -1031,9 +1031,11 @@ export default function Logistics() {
 
         <div className="flex gap-1 bg-slate-100 p-1 rounded-xl mb-0">
           {[
-            { id: "menu", label: "🥘 Menú y Bebidas" },
-            { id: "transporte", label: "🚗 Transporte" },
-          ].map((tab) => (
+            isFutbol 
+              ? { id: "alineacion", label: "⚽ Alineación" } 
+              : { id: "menu", label: "🥘 " + (isAsado ? "Carnes y Bebidas" : "Menú y Bebidas") },
+            (!isFutbol) && { id: "transporte", label: "🚗 Transporte" },
+          ].filter(Boolean).map((tab) => (
             <button
               key={tab.id}
               id={`tab-${tab.id}`}
@@ -1060,6 +1062,40 @@ export default function Logistics() {
       )}
 
       <div className="px-4 pt-4 space-y-4">
+        {activeTab === "alineacion" && (
+          <div className="animate-in fade-in duration-300">
+            <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-100 rounded-2xl p-4 mb-5 shadow-sm">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                  <span className="text-xl">👕</span>
+                </div>
+                <div>
+                  <h2 className="text-sm font-extrabold text-emerald-800">
+                    Alineación y Posiciones
+                  </h2>
+                  <p className="text-xs text-emerald-600/80 leading-relaxed">
+                    Anota aquí los equipos, quién tapa, o usa esta lista para el alquiler de la cancha.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <IngredientCategoryCard
+              title="Equipos y Posiciones"
+              icon={ShoppingBasket} 
+              category="Desayuno" 
+              items={activePaseo.logistics?.ingredients?.filter(
+                (i) => i.category === "Desayuno"
+              )}
+              onAdd={handleAddIngredient}
+              onRemove={removeIngredient}
+              onToggle={toggleIngredientBought}
+              isLocked={isLocked}
+              placeholder="Ej: Pedro (Arquero Equipo A)"
+            />
+          </div>
+        )}
+
         {activeTab === "alineacion" && (
           <div className="animate-in fade-in duration-300">
             <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-100 rounded-2xl p-4 mb-5 shadow-sm">
