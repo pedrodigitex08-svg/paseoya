@@ -1468,7 +1468,7 @@ export default function LaVaca() {
     0
   );
   const recaudoPct = calcRecaudo(paseo);
-  const baseCuota = calcParticipantBaseCuota(paseo, participant?.id || currentUser?.id);
+  const baseCuota = calcParticipantBaseCuota(paseo, currentUser?.id);
   const myTransport = calcBusAddonForPerson(paseo, currentUser?.id);
   const myTotal = baseCuota + myTransport;
   const paidCount = activePartic.filter((p) => p.hasPaid).length;
