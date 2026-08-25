@@ -238,6 +238,8 @@ function calcParticipantBaseCuota(paseo, participantId) {
     
   const baseBudget = paseo.finance?.totalBudget || 0;
   const totalGeneral = baseBudget + generalMarket;
+  const marketReal = liquorCost + generalMarket;
+  const { lblAlojamiento, lblMercado } = getLabels(paseo);
 
   let totalDaysAll = 0;
   let totalDrinkers = 0;
@@ -866,6 +868,8 @@ function ParticipantPayRow({
   const liquorCost = ingredients.filter(i => i.category === "Bebidas").reduce((sum, item) => sum + (item.actualCost || item.estimatedCost || 0), 0);
   const generalMarket = ingredients.filter(i => i.category !== "Bebidas").reduce((sum, item) => sum + (item.actualCost || item.estimatedCost || 0), 0);
   const totalGeneral = baseBudget + generalMarket;
+  const marketReal = liquorCost + generalMarket;
+  const { lblAlojamiento, lblMercado } = getLabels(paseo);
 
   const maxDays = getTripDays(paseo);
   const activeParticipants = paseo.participants?.filter(p => p.status !== "cancelled") || [];
@@ -1049,7 +1053,7 @@ function ParticipantPayRow({
               {/* Item: Alojamiento / Base */}
               <div className="flex items-start justify-between gap-2 text-slate-600">
                 <div>
-                  <p className="font-bold text-slate-700">🏡 Alojamiento & Base</p>
+                    <p className="font-bold text-slate-700">{lblAlojamiento}</p>
                   <p className="text-[10px] text-slate-400">
                     {formatCOP(baseBudget)} / {activeCount} pers.
                   </p>
@@ -1063,7 +1067,7 @@ function ParticipantPayRow({
               {marketReal > 0 && (
                 <div className="flex items-start justify-between gap-2 text-slate-600">
                   <div>
-                    <p className="font-bold text-slate-700">🍖 Comida y Mercado</p>
+                      <p className="font-bold text-slate-700">{lblMercado}</p>
                     <p className="text-[10px] text-slate-400">
                       {formatCOP(marketReal)} / {activeCount} pers.
                     </p>
