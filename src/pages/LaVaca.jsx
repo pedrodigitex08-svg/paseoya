@@ -18,7 +18,10 @@ import {
   Camera,
   Percent,
   Lock,
+  FileDown,
+  MessageCircle,
 } from "lucide-react";
+import { jsPDF } from "jspdf";
 import { usePaseo } from "../store/usePaseoStore";
 import BottomNav from "../components/layout/BottomNav";
 import Button from "../components/ui/Button";
@@ -1446,7 +1449,144 @@ export default function LaVaca() {
     st.finalTotal = st.total + st.tipAmount;
   });
 
+  // ─────────────────────────────────────────────
+  // 📥 DESCARGAR REPORTE PDF
+  // ─────────────────────────────────────────────
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    const orange = [249, 115, 22];
+    const slate800 = [30, 41, 59];
+    const slate400 = [148, 163, 184];
+    const greenColor = [22, 163, 74];
+    const amberColor = [217, 119, 6];
+    const pageW = 210;
+    const margin = 18;
+    let y = 0;
+
+    doc.setFillColor(...orange);
+    doc.rect(0, 0, pageW, 36, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.text("PaseoYa", margin, 16);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text("Reporte de Finanzas del Paseo", margin, 24);
+    doc.setFontSize(8);
+    doc.text(new Date().toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" }), margin, 31);
+
+    y = 48;
+    doc.setTextColor(...slate800);
+    doc.setFontSize(15);
+    doc.setFont("helvetica", "bold");
+    doc.text(`${paseo.emoji || ""} ${paseo.name}`, margin, y);
+    y += 11;
+
+    doc.setFillColor(254, 243, 199);
+    doc.roundedRect(margin, y, pageW - margin * 2, 38, 3, 3, "F");
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...slate400);
+    doc.text("RESUMEN FINANCIERO", margin + 4, y + 7);
+    doc.setFontSize(10);
+    doc.setTextColor(...slate800);
+    doc.text("Hospedaje Base:", margin + 4, y + 16);
+    doc.text(formatCOP(paseo.finance?.totalBudget || 0), pageW - margin - 4, y + 16, { align: "right" });
+    doc.text("Mercado / Menu:", margin + 4, y + 24);
+    doc.text(formatCOP(marketReal), pageW - margin - 4, y + 24, { align: "right" });
+    doc.setDrawColor(...orange);
+    doc.setLineWidth(0.4);
+    doc.line(margin + 4, y + 28, pageW - margin - 4, y + 28);
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...orange);
+    doc.text("TOTAL COMPARTIDO:", margin + 4, y + 36);
+    doc.text(formatCOP(adjustedTotalBudget), pageW - margin - 4, y + 36, { align: "right" });
+    y += 44;
+
+    doc.setFontSize(9);
+    doc.setTextColor(...slate400);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Cuota base por persona (${activePartic.length} asistentes): ${formatCOP(baseCuota)}`, margin, y);
+    y += 13;
+
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...slate800);
+    doc.text("Estado de Pagos por Persona", margin, y);
+    y += 7;
+
+    activePartic.forEach((p, i) => {
+      const bg = i % 2 === 0 ? [248, 250, 252] : [255, 255, 255];
+      doc.setFillColor(...bg);
+      doc.rect(margin, y - 4, pageW - margin * 2, 10, "F");
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(...slate800);
+      doc.text(p.name, margin + 3, y + 2);
+      const cuota = calcBaseCuota(paseo) + calcBusAddonForPerson(paseo, p.id);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(...slate400);
+      doc.text(formatCOP(cuota), margin + 80, y + 2);
+      if (p.hasPaid) {
+        doc.setTextColor(...greenColor);
+        doc.setFont("helvetica", "bold");
+        doc.text("PAGO", pageW - margin - 4, y + 2, { align: "right" });
+      } else {
+        doc.setTextColor(...amberColor);
+        doc.setFont("helvetica", "bold");
+        doc.text("PENDIENTE", pageW - margin - 4, y + 2, { align: "right" });
+      }
+      y += 11;
+      if (y > 260) { doc.addPage(); y = 20; }
+    });
+
+    y += 6;
+
+    if (expenses.length > 0) {
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(...slate800);
+      doc.text("Gastos Extras Compartidos", margin, y);
+      y += 7;
+      expenses.forEach((e) => {
+        const cat = EXPENSE_CATEGORIES.find((c) => c.id === e.category);
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(...slate800);
+        doc.text(`${cat?.label || "Otro"}: ${e.description}`, margin + 3, y);
+        doc.setTextColor(...orange);
+        doc.setFont("helvetica", "bold");
+        doc.text(formatCOP(e.amount), pageW - margin - 4, y, { align: "right" });
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(...slate400);
+        doc.setFontSize(8);
+        doc.text(`Pago: ${e.paidBy}`, margin + 3, y + 5);
+        y += 13;
+        if (y > 260) { doc.addPage(); y = 20; }
+      });
+    }
+
+    doc.setFontSize(7);
+    doc.setTextColor(...slate400);
+    doc.text("Generado con PaseoYa - paseoya.vercel.app", pageW / 2, 287, { align: "center" });
+    doc.save(`PaseoYa_Reporte_${(paseo.name || "paseo").replace(/\s+/g, "_")}.pdf`);
+  };
+
+  // ─────────────────────────────────────────────
+  // 💬 COBRAR SIN PENA (WhatsApp)
+  // ─────────────────────────────────────────────
+  const handleWhatsAppReminder = (participant) => {
+    const cuota = calcBaseCuota(paseo) + calcBusAddonForPerson(paseo, participant.id);
+    const nombre = participant.name.split(" ")[0];
+    const msg = encodeURIComponent(
+      `Hola ${nombre}! Te recuerdo con carino (y sin pena!) que tu cuota para *${paseo.name}* es de *${formatCOP(cuota)}*.\n\nCuando puedas mandame la platica para cerrar la vaca!\n\n_Enviado desde PaseoYa - paseoya.vercel.app_`
+    );
+    window.open(`https://wa.me/?text=${msg}`, "_blank");
+  };
+
   return (
+
     <div className="min-h-screen bg-slate-50 pb-24 relative">
       {showDebtModal && !isLocked && (
         <DebtModal
@@ -1756,6 +1896,91 @@ export default function LaVaca() {
                   />
                 ))}
             </div>
+          </section>
+
+          {/* ─── ACCIONES RÁPIDAS: PDF + COBRAR SIN PENA ─── */}
+          <section>
+            <div className="mb-3 mt-2">
+              <h2 className="text-base font-extrabold text-slate-800">Acciones del Anfitrión ⚡</h2>
+              <p className="text-xs text-slate-400 font-medium">Descarga el reporte o cobra la cuota por WhatsApp</p>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {/* Botón PDF */}
+              <button
+                onClick={handleDownloadPDF}
+                className="flex flex-col items-center justify-center gap-2 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm hover:bg-orange-50 hover:border-orange-200 active:scale-95 transition-all duration-200"
+              >
+                <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
+                  <FileDown size={20} className="text-orange-500" />
+                </div>
+                <div className="text-center">
+                  <p className="text-xs font-extrabold text-slate-800">Descargar PDF</p>
+                  <p className="text-[10px] text-slate-400 font-medium">Reporte de gastos</p>
+                </div>
+              </button>
+
+              {/* Botón Cobrar Sin Pena – abre selector */}
+              <button
+                onClick={() => {
+                  const pending = activePartic.filter((p) => !p.hasPaid);
+                  if (pending.length === 0) {
+                    alert("¡Todos han pagado! 🎉 No hay nadie pendiente.");
+                    return;
+                  }
+                  if (pending.length === 1) {
+                    handleWhatsAppReminder(pending[0]);
+                    return;
+                  }
+                  const names = pending.map((p, i) => `${i + 1}. ${p.name}`).join("\n");
+                  const idx = prompt(`¿A quién quieres cobrarle?\n\n${names}\n\nEscribe el número:`);
+                  const chosen = pending[parseInt(idx) - 1];
+                  if (chosen) handleWhatsAppReminder(chosen);
+                }}
+                className="flex flex-col items-center justify-center gap-2 p-4 bg-white border border-slate-100 rounded-2xl shadow-sm hover:bg-green-50 hover:border-green-200 active:scale-95 transition-all duration-200"
+              >
+                <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
+                  <MessageCircle size={20} className="text-green-600" />
+                </div>
+                <div className="text-center">
+                  <p className="text-xs font-extrabold text-slate-800">Cobrar sin Pena</p>
+                  <p className="text-[10px] text-slate-400 font-medium">Recordatorio WhatsApp</p>
+                </div>
+              </button>
+            </div>
+
+            {/* Sub-lista de pendientes con botón directo */}
+            {activePartic.filter((p) => !p.hasPaid).length > 0 && (
+              <div className="mt-3 bg-amber-50 border border-amber-100 rounded-2xl p-3 space-y-2">
+                <p className="text-[10px] font-extrabold text-amber-600 uppercase tracking-wider">Pendientes de pago</p>
+                {activePartic
+                  .filter((p) => !p.hasPaid)
+                  .map((p) => {
+                    const cuota = calcBaseCuota(paseo) + calcBusAddonForPerson(paseo, p.id);
+                    return (
+                      <div key={p.id} className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div
+                            className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold text-slate-700"
+                            style={{ background: getAvatarBg(p.name) }}
+                          >
+                            {getInitials(p.name)}
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-slate-800">{p.name.split(" ")[0]}</p>
+                            <p className="text-[10px] text-amber-600 font-semibold">{formatCOP(cuota)} pendiente</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleWhatsAppReminder(p)}
+                          className="flex items-center gap-1 px-2.5 py-1.5 bg-green-500 text-white text-[10px] font-extrabold rounded-full hover:bg-green-600 active:scale-95 transition-all"
+                        >
+                          <MessageCircle size={10} /> Cobrar
+                        </button>
+                      </div>
+                    );
+                  })}
+              </div>
+            )}
           </section>
 
           {/* Gastos Extras */}
