@@ -882,9 +882,7 @@ export default function Logistics() {
     toggleIngredientBought,
   } = usePaseo();
 
-  const isFutbol = activePaseo?.category === "futbol";
-  const isAsado = activePaseo?.category === "asado";
-  const [activeTab, setActiveTab] = useState(isFutbol ? "alineacion" : "menu");
+  const [activeTab, setActiveTab] = useState("menu");
   const [showCarForm, setShowCarForm] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
   const [localDest, setLocalDest] = useState("");
@@ -904,6 +902,15 @@ export default function Logistics() {
       setLocalDest(state.activePaseo.logistics.destination);
     }
   }, [state.activePaseo?.id]); // eslint-disable-line
+
+  // 🔄 Adjusts active tab when category loads (futbol gets "alineacion")
+  useEffect(() => {
+    if (state.activePaseo?.category === "futbol") {
+      setActiveTab("alineacion");
+    } else {
+      setActiveTab("menu");
+    }
+  }, [state.activePaseo?.category]);
 
   const showToast = () => {
     setToastVisible(true);
@@ -954,6 +961,8 @@ export default function Logistics() {
   }
 
   const isLocked = paseo?.estado === "finalizado";
+  const isFutbol = paseo?.category === "futbol";
+  const isAsado = paseo?.category === "asado";
   const { cars, bus } = paseo.logistics.transport;
   const ingredients = paseo.logistics.ingredients || [];
 
@@ -1116,10 +1125,10 @@ export default function Logistics() {
             
             <IngredientCategoryCard
               title="Equipos y Posiciones"
-              icon={ShoppingBasket} 
-              category="Desayuno" 
-              items={activePaseo.logistics?.ingredients?.filter(
-                (i) => i.category === "Desayuno"
+              icon={ShoppingBasket}
+              category="Snacks"
+              items={paseo.logistics?.ingredients?.filter(
+                (i) => i.category === "Snacks"
               )}
               onAdd={handleAddIngredient}
               onRemove={removeIngredient}
