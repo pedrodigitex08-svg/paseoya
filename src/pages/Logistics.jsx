@@ -438,6 +438,117 @@ function AddVehicleForm({ onSubmit, onCancel, colorIndex }) {
 }
 
 // ─────────────────────────────────────────────
+// PLAYER CARD (For Futbol Alineacion)
+// ─────────────────────────────────────────────
+function PlayerCard({ item, onRemove, isLocked }) {
+  return (
+    <div className="flex items-center gap-3 p-3 rounded-xl border bg-white border-slate-100 shadow-sm">
+      <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold text-sm">
+        {item.name.charAt(0).toUpperCase()}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-bold text-slate-800 truncate">{item.name}</p>
+        {item.assignedTo && (
+          <p className="text-[11px] font-semibold text-emerald-600 mt-0.5">{item.assignedTo}</p>
+        )}
+      </div>
+      {!isLocked && (
+        <button
+          onClick={() => onRemove(item.id)}
+          className="text-red-400 hover:bg-red-50 p-1.5 rounded-lg transition-colors"
+        >
+          <Trash2 size={14} />
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// ADD PLAYER MODAL
+// ─────────────────────────────────────────────
+function AddPlayerModal({ category, onSubmit, onClose }) {
+  const [name, setName] = useState("");
+  const [position, setPosition] = useState("");
+
+  return (
+    <div className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+      <div className="w-full max-w-md bg-white rounded-3xl p-5 space-y-4 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div>
+            <h3 className="font-extrabold text-slate-900 text-base">
+              {category.emoji} Agregar a Alineación
+            </h3>
+            <p className="text-[10px] font-bold text-slate-400 uppercase mt-0.5 tracking-wider">
+              Equipos y Posiciones
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200"
+          >
+            <X size={16} className="text-slate-600" />
+          </button>
+        </div>
+
+        <div className="space-y-3">
+          <div>
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide block mb-1">
+              Nombre del jugador / Ítem <span className="text-orange-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Ej: Pedro, Balón, Petos..."
+              maxLength={50}
+              className="w-full border-2 border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-800 outline-none focus:border-emerald-400"
+              autoFocus
+            />
+          </div>
+
+          <div>
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide block mb-1">
+              Posición o Nota
+            </label>
+            <input
+              type="text"
+              value={position}
+              onChange={(e) => setPosition(e.target.value)}
+              placeholder="Ej: Arquero, Defensa, Lleva el balón..."
+              maxLength={50}
+              className="w-full border-2 border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-800 outline-none focus:border-emerald-400"
+            />
+          </div>
+        </div>
+
+        <button
+          onClick={() => {
+            if (!name.trim()) return;
+            onSubmit({
+              id: Date.now().toString(),
+              name: name.trim(),
+              category: category.id,
+              plato: "Alineación",
+              qty: 1,
+              unit: "",
+              estimatedCost: 0,
+              actualCost: null,
+              assignedTo: position.trim() || null,
+              bought: false,
+            });
+          }}
+          disabled={!name.trim()}
+          className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold text-sm shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Agregar
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
 // INGREDIENT CARD
 // ─────────────────────────────────────────────
 function IngredientCard({
@@ -994,21 +1105,33 @@ export default function Logistics() {
       <Toast message="✅ Guardado correctamente" visible={toastVisible} />
 
       {activeCategoryForModal && !isLocked && (
-        <AddItemModal
-          category={activeCategoryForModal}
-          currentPlato={
-            platoInputs[activeCategoryForModal.id]?.trim() || "Para compartir"
-          }
-          participants={paseo.participants.filter(
-            (p) => p.status !== "cancelled"
-          )}
-          onSubmit={(d) => {
-            addIngredient(d);
-            setActiveCategoryForModal(null);
-            showToast();
-          }}
-          onClose={() => setActiveCategoryForModal(null)}
-        />
+        isFutbol && activeTab === "alineacion" ? (
+          <AddPlayerModal
+            category={activeCategoryForModal}
+            onSubmit={(d) => {
+              addIngredient(d);
+              setActiveCategoryForModal(null);
+              showToast();
+            }}
+            onClose={() => setActiveCategoryForModal(null)}
+          />
+        ) : (
+          <AddItemModal
+            category={activeCategoryForModal}
+            currentPlato={
+              platoInputs[activeCategoryForModal.id]?.trim() || "Para compartir"
+            }
+            participants={paseo.participants.filter(
+              (p) => p.status !== "cancelled"
+            )}
+            onSubmit={(d) => {
+              addIngredient(d);
+              setActiveCategoryForModal(null);
+              showToast();
+            }}
+            onClose={() => setActiveCategoryForModal(null)}
+          />
+        )
       )}
 
       {/* TOP BAR */}
@@ -1092,15 +1215,10 @@ export default function Logistics() {
             
             <div className="space-y-2 mt-4">
               {paseo.logistics?.ingredients?.filter(i => i.category === "Snacks").map(item => (
-                <IngredientCard
+                <PlayerCard
                   key={item.id}
                   item={item}
-                  onToggle={() => toggleIngredientBought(item.id)}
                   onRemove={() => removeIngredient(item.id)}
-                  onSetActualCost={(id, cost) => {
-                     const upd = paseo.logistics.ingredients.map(i => i.id === id ? {...i, actualCost: cost} : i);
-                     usePaseo.getState().updatePaseo(paseo.id, { logistics: { ...paseo.logistics, ingredients: upd } });
-                  }}
                   isLocked={isLocked}
                 />
               ))}

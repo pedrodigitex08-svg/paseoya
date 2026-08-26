@@ -1947,7 +1947,7 @@ export default function LaVaca() {
               <div className="space-y-2">
                 <div className="flex justify-between items-center text-white/90 text-sm">
                   <span className="flex items-center gap-1.5">
-                    🏠 Hospedaje y Base
+                    {lblAlojamiento}
                     {!isLocked && currentUser?.role === "host" && (
                       <button
                         onClick={() => {
