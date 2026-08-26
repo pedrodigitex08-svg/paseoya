@@ -12,8 +12,12 @@ import {
   Unlock,
   ShieldAlert,
   Trash2,
+  Backpack,
+  Dices,
 } from "lucide-react";
 import BottomNav from "../components/layout/BottomNav";
+import { PackingModal } from "../components/modals/PackingModal";
+import { RouletteModal } from "../components/modals/RouletteModal";
 
 // Helper para formatear moneda
 const formatCurrency = (amount) =>
@@ -34,6 +38,8 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [isLocking, setIsLocking] = useState(false);
+  const [showPacking, setShowPacking] = useState(false);
+  const [showRoulette, setShowRoulette] = useState(false);
 
   // 🔒 Detectamos si el paseo ya fue cerrado
   const isLocked = paseo?.estado === "finalizado";
@@ -55,6 +61,33 @@ export default function Dashboard() {
     labelLocation = "Lugar o ubicación";
     labelBudget = "Cover o Consumo estimado";
   }
+
+  const rawVotingState = paseo?.votingState || {};
+  const isVoting = rawVotingState.location?.isActive || rawVotingState.date?.isActive;
+  
+  const winningPlace =
+    paseo?.places?.length > 0
+      ? [...paseo.places].sort((a, b) => {
+          const likesA = Object.values(paseo.votes?.places?.[a.id] || {}).filter((v) => v === "like").length;
+          const likesB = Object.values(paseo.votes?.places?.[b.id] || {}).filter((v) => v === "like").length;
+          return likesB - likesA;
+        })[0]
+      : null;
+
+  const hasLikes = winningPlace
+    ? Object.values(paseo?.votes?.places?.[winningPlace.id] || {}).some((v) => v === "like")
+    : false;
+
+  const confirmedLocation =
+    (hasLikes ? winningPlace.location || winningPlace.name : null) ||
+    paseo?.ubicacion ||
+    paseo?.location ||
+    paseo?.destination ||
+    paseo?.city ||
+    paseo?.place ||
+    paseo?.places?.[0]?.location ||
+    paseo?.places?.[0]?.name ||
+    "Por definir";
 
 
   useEffect(() => {
@@ -234,7 +267,32 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* ── RESUMEN RÁPIDO ── */}
+        {/* 📍 PUNTO DE ENCUENTRO (Mapa + Clima) */}
+        {confirmedLocation !== "Por definir" && !isVoting && (
+          <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm flex items-center justify-between gap-4 mt-8 animate-in fade-in duration-300">
+            <div className="flex items-center gap-4 flex-1 min-w-0">
+              <div className="w-12 h-12 rounded-full bg-sky-50 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+                <span className="text-2xl relative z-10">{['playa'].includes(paseo?.category) ? '☀️' : '⛅'}</span>
+                <div className="absolute inset-0 bg-gradient-to-tr from-sky-200/50 to-transparent"></div>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Destino confirmado</p>
+                <p className="text-sm font-extrabold text-slate-800 truncate">{confirmedLocation}</p>
+                <p className="text-xs text-slate-500 font-medium mt-0.5">26°C · Clima ideal</p>
+              </div>
+            </div>
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(confirmedLocation)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-shrink-0 w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-md shadow-blue-600/20 hover:scale-105 active:scale-95 transition-all"
+            >
+              <span className="text-xl">🚗</span>
+            </a>
+          </div>
+        )}
+
+        {/* ⚡ RESUMEN RÁPIDO ⚡ */}
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between">
             <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center mb-3">
@@ -313,6 +371,36 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* 🎮 OPCIONES RÁPIDAS (Gamificación) */}
+        <div className="mt-8 space-y-3">
+          <h2 className="text-sm font-extrabold text-slate-800 mb-4 ml-1">Gamificación y Extras</h2>
+          <button
+            onClick={() => setShowPacking(true)}
+            className="flex items-center gap-3 w-full p-4 bg-white rounded-2xl border border-slate-100 text-left transition-all duration-200 hover:shadow-md active:scale-95"
+          >
+            <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
+              <Backpack size={18} className="text-orange-500" />
+            </div>
+            <div className="flex-1">
+              <p className="font-extrabold text-slate-800 text-sm">🎒 Mi Maleta</p>
+              <p className="text-xs text-slate-500 mt-0.5">Checklist sugerido para no olvidar nada</p>
+            </div>
+          </button>
+          
+          <button
+            onClick={() => setShowRoulette(true)}
+            className="flex items-center gap-3 w-full p-4 bg-white rounded-2xl border border-slate-100 text-left transition-all duration-200 hover:shadow-md active:scale-95"
+          >
+            <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
+              <Dices size={18} className="text-orange-500" />
+            </div>
+            <div className="flex-1">
+              <p className="font-extrabold text-slate-800 text-sm">🎲 Ruleta del Paseo</p>
+              <p className="text-xs text-slate-500 mt-0.5">Gamifica las tareas y castigos</p>
+            </div>
+          </button>
+        </div>
+
         {/* ── SECCIÓN DE CONTROL (CANDADO) ── */}
         <div
           className={`p-5 rounded-3xl border shadow-sm mt-8 ${
@@ -365,7 +453,10 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* ── BARRA DE NAVEGACIÓN INFERIOR (Fija y accesible) ── */}
+      {showPacking && <PackingModal paseo={paseo} onClose={() => setShowPacking(false)} />}
+      {showRoulette && <RouletteModal paseo={paseo} onClose={() => setShowRoulette(false)} />}
+
+      {/* 📱 BARRA DE NAVEGACIÓN INFERIOR (Fija y accesible) 📱 */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-100 shadow-lg">
         <BottomNav />
       </div>
