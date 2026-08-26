@@ -431,6 +431,7 @@ export default function GuestDashboard() {
   }
 
   const paseo = state.activePaseo;
+  const isVoting = paseo?.votingState?.location?.isActive || paseo?.votingState?.date?.isActive;
 
   if (notFound || !paseo) {
     return (
