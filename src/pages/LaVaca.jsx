@@ -1234,12 +1234,10 @@ function PaymentLinkCard({
 // ─────────────────────────────────────────────
 
 const getLabels = (paseo) => {
+  // Solo rumba y restaurante usan la pantalla de "Cuentas Claras" (dividir consumos individuales)
   const isShortEvent =
     paseo?.category === "rumba" ||
-    paseo?.category === "restaurante" ||
-    paseo?.category === "asado" ||
-    paseo?.category === "regalo" ||
-    paseo?.category === "futbol";
+    paseo?.category === "restaurante";
 
   let lblAlojamiento = "🏠 Alojamiento & Base";
   let lblMercado = "🛒 Comida y Mercado";
@@ -1893,7 +1891,10 @@ export default function LaVaca() {
         </button>
         <div className="flex-1">
           <h1 className="text-lg font-extrabold text-slate-900 leading-tight">
-            {!isShortEvent ? "Finanzas y Pagos" : "Cuentas Claras"}
+            {paseo.category === "futbol" ? "⚽ La Vaca del Partido" :
+             paseo.category === "asado"  ? "🔥 La Vaca del Asado" :
+             paseo.category === "regalo" ? "🎁 La Vaca del Regalo" :
+             !isShortEvent ? "Finanzas y Pagos" : "Cuentas Claras"}
           </h1>
           <p className="text-xs text-slate-400">
             {paseo.emoji} {paseo.name}
