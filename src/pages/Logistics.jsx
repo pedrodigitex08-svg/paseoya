@@ -21,6 +21,7 @@ import {
 import { usePaseo } from "../store/usePaseoStore";
 import BottomNav from "../components/layout/BottomNav";
 import Button from "../components/ui/Button";
+import { CurrencyInput } from "../components/ui/CurrencyInput";
 
 // ─────────────────────────────────────────────
 // DEMO PASEO (testing sin wizard)
@@ -617,8 +618,7 @@ function IngredientCard({
 
           {isEditingCost ? (
             <div className="flex items-center gap-1">
-              <input
-                type="number"
+              <CurrencyInput
                 value={actualInput}
                 onChange={(e) => setActualInput(e.target.value)}
                 placeholder="Precio Real"
@@ -786,11 +786,9 @@ function AddItemModal({
               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide block mb-1">
                 Costo est. $
               </label>
-              <input
-                type="number"
+              <CurrencyInput
                 value={cost}
                 onChange={(e) => setCost(e.target.value)}
-                min="0"
                 placeholder="0"
                 className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-teal-400"
               />
@@ -925,8 +923,7 @@ function BusConfigCard({ bus, participants, onUpdate, onSave, isLocked }) {
           disabled={isLocked}
           className="border-2 rounded-xl px-3 py-2 text-sm font-semibold outline-none"
         />
-        <input
-          type="number"
+        <CurrencyInput
           value={cost}
           onChange={(e) => setCost(e.target.value)}
           placeholder="Costo total $"

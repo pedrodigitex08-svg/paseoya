@@ -21,6 +21,7 @@ import {
   Trophy,
 } from "lucide-react";
 import { usePaseo, createPaseoTemplate } from "../store/usePaseoStore";
+import { CurrencyInput } from "../components/ui/CurrencyInput";
 
 // ─────────────────────────────────────────────
 // CONFIGURACIÓN DE CATEGORÍAS
@@ -545,12 +546,10 @@ export default function CreatePaseo() {
                 <div className="w-7 h-7 rounded-full bg-green-100 flex items-center justify-center">
                   <DollarSign size={16} className="text-green-600" />
                 </div>
-                <input
-                  type="number"
+                <CurrencyInput
                   value={formData.costoBase}
                   onChange={(e) => updateForm("costoBase", e.target.value)}
                   placeholder="0"
-                  min="0"
                   className="flex-1 bg-transparent border-none outline-none text-slate-800 font-extrabold text-lg placeholder:text-slate-300"
                 />
                 <span className="text-xs font-bold text-slate-400">COP</span>

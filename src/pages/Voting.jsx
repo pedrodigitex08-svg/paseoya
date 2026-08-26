@@ -17,6 +17,7 @@ import {
 import { usePaseo } from "../store/usePaseoStore";
 import BottomNav from "../components/layout/BottomNav";
 import Button from "../components/ui/Button";
+import { CurrencyInput } from "../components/ui/CurrencyInput";
 
 // ─────────────────────────────────────────────
 // HELPERS
@@ -569,12 +570,10 @@ function AddPlaceForm({ onSubmit, onCancel }) {
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide block mb-1">
             Presupuesto $
           </label>
-          <input
-            type="number"
+          <CurrencyInput
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
             placeholder="500000"
-            min={0}
             className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-teal-400 transition-colors placeholder:text-slate-300"
           />
         </div>

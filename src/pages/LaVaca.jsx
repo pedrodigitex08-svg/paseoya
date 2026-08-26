@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { jsPDF } from "jspdf";
 import { usePaseo } from "../store/usePaseoStore";
+import { CurrencyInput } from "../components/ui/CurrencyInput";
 import BottomNav from "../components/layout/BottomNav";
 import Button from "../components/ui/Button";
 
@@ -674,11 +675,9 @@ function DebtModal({ participants, onSubmit, onClose }) {
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide block mb-1">
             Monto $ <span className="text-orange-500">*</span>
           </label>
-          <input
-            type="number"
+          <CurrencyInput
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            min="0"
             placeholder="0"
             className="w-full border-2 border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-800 outline-none focus:border-orange-400 transition-colors placeholder:text-slate-300"
           />
@@ -1848,13 +1847,11 @@ export default function LaVaca() {
                 <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">
                   Precio Total
                 </label>
-                <input
-                  type="number"
+                <CurrencyInput
                   value={billAmt}
                   onChange={(e) => setBillAmt(e.target.value)}
                   className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold outline-none focus:border-orange-400"
                   placeholder="Ej: 45000"
-                  min="0"
                 />
               </div>
               <Button
@@ -1965,12 +1962,11 @@ export default function LaVaca() {
                   </span>
                   {editBudget ? (
                     <div className="flex items-center gap-1">
-                      <input
-                        type="number"
+                      <CurrencyInput
                         value={budgetInput}
                         onChange={(e) => setBudgetInput(e.target.value)}
                         placeholder={String(paseo.finance?.totalBudget || "0")}
-                        className="w-20 bg-white/20 text-white text-sm font-bold rounded px-1.5 py-0.5 outline-none text-right border border-white/30"
+                        className="w-24 bg-white/20 text-white text-sm font-bold rounded px-1.5 py-0.5 outline-none text-right border border-white/30"
                         autoFocus
                         onKeyDown={(e) =>
                           e.key === "Enter" && handleBudgetSave()
@@ -2265,8 +2261,7 @@ export default function LaVaca() {
                   <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">
                     Monto total
                   </label>
-                  <input
-                    type="number"
+                  <CurrencyInput
                     placeholder="Monto $"
                     value={expAmt}
                     onChange={(e) => setExpAmt(e.target.value)}
