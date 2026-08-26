@@ -64,6 +64,8 @@ export const createPaseoTemplate = (data) => {
         role: "host",
         status: "confirmed",
         hasPaid: true,
+        staysOvernight: true,
+        
         joinedAt: new Date().toISOString(),
       },
     ],
@@ -875,3 +877,4 @@ export const usePaseo = create(
 export function PaseoProvider({ children }) {
   return children;
 }
+

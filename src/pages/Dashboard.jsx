@@ -14,7 +14,9 @@ import {
   Trash2,
   Backpack,
   Dices,
+  Calendar
 } from "lucide-react";
+import { calculateDuration, formatDuration } from "../utils/dateUtils";
 import BottomNav from "../components/layout/BottomNav";
 import { PackingModal } from "../components/modals/PackingModal";
 import { RouletteModal } from "../components/modals/RouletteModal";
@@ -65,6 +67,20 @@ export default function Dashboard() {
   const rawVotingState = paseo?.votingState || {};
   const isVoting = rawVotingState.location?.isActive || rawVotingState.date?.isActive;
   
+  const winnerDate =
+    paseo?.tentativeDates?.length > 0
+      ? [...paseo.tentativeDates].sort((a, b) => {
+          const yesA = Object.values(paseo.votes?.dates?.[a.id] || {}).filter((v) => v === "yes").length;
+          const yesB = Object.values(paseo.votes?.dates?.[b.id] || {}).filter((v) => v === "yes").length;
+          return yesB - yesA;
+        })[0]
+      : null;
+
+  const isSameDay = paseo?.isSameDay || false;
+  const duration = isSameDay
+    ? { days: 1, nights: 0 }
+    : calculateDuration(winnerDate?.startDate || paseo?.fechaIda, winnerDate?.endDate || paseo?.fechaRegreso);
+
   const winningPlace =
     paseo?.places?.length > 0
       ? [...paseo.places].sort((a, b) => {
@@ -323,9 +339,26 @@ export default function Dashboard() {
               </p>
             </div>
           </div>
-        </div>
+          </div>
 
-        {/* ── PARTICIPANTES CONFIRMADOS ── */}
+          {/* 📅 DURACIÓN (Días / Noches) */}
+          {!isShortEvent && (
+            <div className="bg-white mt-4 p-4 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center flex-shrink-0">
+                <Calendar size={18} className="text-indigo-500" />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold text-slate-400 uppercase">
+                  Duración del plan
+                </p>
+                <p className="font-extrabold text-slate-800 text-sm">
+                  {formatDuration(duration)}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* 👥 PARTICIPANTES CONFIRMADOS 👥 */}
         <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-slate-800 flex items-center gap-2">

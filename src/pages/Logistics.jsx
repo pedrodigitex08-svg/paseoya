@@ -22,6 +22,7 @@ import { usePaseo } from "../store/usePaseoStore";
 import BottomNav from "../components/layout/BottomNav";
 import Button from "../components/ui/Button";
 import { CurrencyInput } from "../components/ui/CurrencyInput";
+import { calculateDuration, generateMealSlots } from "../utils/dateUtils";
 
 // ─────────────────────────────────────────────
 // DEMO PASEO (testing sin wizard)
@@ -108,53 +109,7 @@ const UNITS = [
   "botella",
 ];
 
-const MEAL_CATEGORIES = [
-  {
-    id: "Desayuno",
-    label: "Desayuno",
-    emoji: "🍳",
-    color: "from-amber-500 to-orange-500",
-    bgLight: "bg-amber-50/50",
-    border: "border-amber-100",
-    text: "text-amber-700",
-  },
-  {
-    id: "Almuerzo",
-    label: "Almuerzo",
-    emoji: "🍛",
-    color: "from-orange-500 to-rose-500",
-    bgLight: "bg-orange-50/50",
-    border: "border-orange-100",
-    text: "text-orange-700",
-  },
-  {
-    id: "Cena",
-    label: "Cena",
-    emoji: "🌮",
-    color: "from-rose-500 to-purple-500",
-    bgLight: "bg-rose-50/50",
-    border: "border-rose-100",
-    text: "text-rose-700",
-  },
-  {
-    id: "Bebidas",
-    label: "Bebidas",
-    emoji: "🥤",
-    color: "from-teal-500 to-emerald-500",
-    bgLight: "bg-teal-50/50",
-    border: "border-teal-100",
-    text: "text-teal-700",
-  },
-  {
-    id: "Snacks",
-    label: "Snacks / Otros",
-    emoji: "🥨",
-    color: "from-indigo-500 to-blue-500",
-    bgLight: "bg-indigo-50/50",
-    border: "border-indigo-100",
-    text: "text-indigo-700",
-  },
-];
+// Removed static MEAL_CATEGORIES
 
 // ─────────────────────────────────────────────
 // TOAST COMPONENT
@@ -1073,6 +1028,19 @@ export default function Logistics() {
   const isAsado = paseo?.category === "asado";
   const { cars, bus } = paseo.logistics.transport;
   const ingredients = paseo.logistics.ingredients || [];
+
+  const winnerDate =
+    paseo?.tentativeDates?.length > 0
+      ? [...paseo.tentativeDates].sort((a, b) => {
+          const yesA = Object.values(paseo.votes?.dates?.[a.id] || {}).filter((v) => v === "yes").length;
+          const yesB = Object.values(paseo.votes?.dates?.[b.id] || {}).filter((v) => v === "yes").length;
+          return yesB - yesA;
+        })[0]
+      : null;
+
+  const duration = calculateDuration(winnerDate?.startDate || paseo?.fechaIda, winnerDate?.endDate || paseo?.fechaRegreso);
+  const isLongTrip = ["finca", "playa", "montana", "otra-ciudad", "ciudad"].includes(paseo?.category || paseo?.categoria);
+  const MEAL_CATEGORIES = isLongTrip ? generateMealSlots(winnerDate?.startDate || paseo?.fechaIda, duration.days) : generateMealSlots(null, 0);
 
   const totalIngCost = ingredients.reduce((s, i) => {
     const cost =

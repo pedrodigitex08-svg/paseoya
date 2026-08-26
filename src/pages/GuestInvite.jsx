@@ -209,6 +209,8 @@ export default function GuestInvite() {
         role: "guest",
         status: "confirmed",
         hasPaid: false,
+        staysOvernight: true,
+        
         joinedAt: new Date().toISOString(),
       });
 
@@ -535,3 +537,4 @@ export default function GuestInvite() {
     </div>
   );
 }
+

@@ -28,6 +28,7 @@ import { usePaseo } from "../store/usePaseoStore";
 import BottomNav from "../components/layout/BottomNav";
 import { PackingModal } from "../components/modals/PackingModal";
 import { RouletteModal } from "../components/modals/RouletteModal";
+import { calculateDuration, formatDuration } from "../utils/dateUtils";
 
 // ─────────────────────────────────────────────
 // CONFIGURACIÓN DE COLORES
@@ -523,6 +524,9 @@ export default function GuestDashboard() {
 
   const heroBannerDate = formatDateRange(winnerDate, isSameDay);
   const hype = getHypeMessage(paseo, winnerDate, recaudoPct, isShortEvent);
+  const duration = isSameDay 
+    ? { days: 1, nights: 0 } 
+    : calculateDuration(winnerDate?.startDate || paseo?.fechaIda, winnerDate?.endDate || paseo?.fechaRegreso);
 
   const handleCopyLink = async () => {
     try {
@@ -658,6 +662,23 @@ export default function GuestDashboard() {
             >
               <span className="text-xl">🚗</span>
             </a>
+          </div>
+        )}
+
+        {/* 📅 DURACIÓN (Días / Noches) */}
+        {!isShortEvent && (
+          <div className="bg-white rounded-3xl p-4 border border-slate-100 shadow-sm flex items-center gap-4 mb-4">
+            <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center flex-shrink-0">
+              <CalendarDays size={18} className="text-indigo-500" />
+            </div>
+            <div>
+              <p className="text-[10px] font-bold text-slate-400 uppercase">
+                Duración del plan
+              </p>
+              <p className="font-extrabold text-slate-800 text-sm">
+                {formatDuration(duration)}
+              </p>
+            </div>
           </div>
         )}
 
