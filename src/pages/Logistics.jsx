@@ -1022,7 +1022,7 @@ export default function Logistics() {
           </button>
           <div className="flex-1">
             <h1 className="text-lg font-extrabold text-slate-900 leading-tight">
-              Logística 🎒
+              {isFutbol ? "Cancha y Alineación ⚽" : isAsado ? "Mercado del Asado 🔥" : paseo?.category === "regalo" ? "Coordinar Regalo 🎁" : "Logística 🎒"}
             </h1>
             <p className="text-xs text-slate-400">
               {paseo.emoji} {paseo.name}
@@ -1099,54 +1099,7 @@ export default function Logistics() {
                   onRemove={() => removeIngredient(item.id)}
                   onSetActualCost={(id, cost) => {
                      const upd = paseo.logistics.ingredients.map(i => i.id === id ? {...i, actualCost: cost} : i);
-                     usePaseo.getState().updatePaseo(paseo.slug, { logistics: { ...paseo.logistics, ingredients: upd } });
-                  }}
-                  isLocked={isLocked}
-                />
-              ))}
-              {!isLocked && (
-                <button
-                  onClick={() => setActiveCategoryForModal({ id: "Snacks", label: "Equipos y Posiciones", emoji: "👕", color: "from-emerald-500 to-green-500" })}
-                  className="w-full flex items-center justify-center gap-1.5 py-3 mt-4 rounded-xl text-white font-bold text-xs transition-all active:scale-[0.98] shadow-sm bg-gradient-to-r from-emerald-500 to-green-500"
-                >
-                  <Plus size={16} />
-                  Agregar Jugador / Ítem
-                </button>
-              )}
-            </div>
-
-          </div>
-        )}
-
-        {activeTab === "alineacion" && (
-          <div className="animate-in fade-in duration-300">
-            <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-100 rounded-2xl p-4 mb-5 shadow-sm">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                  <span className="text-xl">👕</span>
-                </div>
-                <div>
-                  <h2 className="text-sm font-extrabold text-emerald-800">
-                    Alineación y Posiciones
-                  </h2>
-                  <p className="text-xs text-emerald-600/80 leading-relaxed">
-                    Anota aquí los equipos, quién tapa, o usa esta lista para el alquiler de la cancha.
-                  </p>
-                </div>
-              </div>
-            </div>
-            
-            
-            <div className="space-y-2 mt-4">
-              {paseo.logistics?.ingredients?.filter(i => i.category === "Snacks").map(item => (
-                <IngredientCard
-                  key={item.id}
-                  item={item}
-                  onToggle={() => toggleIngredientBought(item.id)}
-                  onRemove={() => removeIngredient(item.id)}
-                  onSetActualCost={(id, cost) => {
-                     const upd = paseo.logistics.ingredients.map(i => i.id === id ? {...i, actualCost: cost} : i);
-                     usePaseo.getState().updatePaseo(paseo.slug, { logistics: { ...paseo.logistics, ingredients: upd } });
+                     usePaseo.getState().updatePaseo(paseo.id, { logistics: { ...paseo.logistics, ingredients: upd } });
                   }}
                   isLocked={isLocked}
                 />

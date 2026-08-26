@@ -746,11 +746,21 @@ export default function GuestDashboard() {
               onClick={() => navigate(`/paseo/${slug}/votar`)}
             />
 
-            {(!isShortEvent || paseo.category === "asado" || paseo.category === "futbol") && (
+            {(!isShortEvent || paseo.category === "asado" || paseo.category === "futbol" || paseo.category === "regalo") && (
                 <QuickAction
                   icon={ShoppingBasket}
-                  label={paseo.category === "futbol" ? "Alineación" : (paseo.category === "asado" ? "¿Quién lleva qué?" : "Logística y Transporte")}
-                sublabel={paseo.category === "futbol" ? "Elige tu posición en la cancha" : (paseo.category === "asado" ? "Organiza carnes y bebidas" : "Ingredientes, carros y buseta")}
+                  label={
+                    paseo.category === "futbol" ? "⚽ Alineación" :
+                    paseo.category === "asado"  ? "🔥 ¿Quién lleva qué?" :
+                    paseo.category === "regalo" ? "🎁 ¿Quién aporta?" :
+                    "🎒 Logística y Transporte"
+                  }
+                  sublabel={
+                    paseo.category === "futbol" ? "Elige tu posición en la cancha" :
+                    paseo.category === "asado"  ? "Organiza carnes, bebidas y quién lleva qué" :
+                    paseo.category === "regalo" ? "Coordina aportes y compras para el regalo" :
+                    "Ingredientes, carros y buseta"
+                  }
                 onClick={() => navigate(`/paseo/${slug}/logistica`)}
               />
             )}
@@ -807,9 +817,12 @@ export default function GuestDashboard() {
               },
               {
                 done: isShortEvent ? false : paseo.finance?.totalBudget > 0,
-                label: isShortEvent
-                  ? "Dividir gastos al final"
-                  : "Presupuesto y Vaca listos",
+                label:
+                  paseo.category === "futbol" ? "Vaca de la cancha lista" :
+                  paseo.category === "asado"  ? "Vaca del asado lista" :
+                  paseo.category === "regalo" ? "Meta del regalo definida" :
+                  isShortEvent ? "Dividir gastos al final" :
+                  "Presupuesto y Vaca listos",
                 action: `/paseo/${slug}/vaca`,
               },
             ].map((item, i) => (
