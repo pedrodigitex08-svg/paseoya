@@ -238,6 +238,7 @@ function calcParticipantBaseCuota(paseo, participantId) {
 
   const p = participantId ? activeParticipants.find(x => x.id === participantId) : null;
   const staysOvernight = p ? (p.staysOvernight !== false) : true;
+  const drinksAlcohol = p ? (p.drinksAlcohol !== false) : true;
   const mealSlots = p ? p.mealSlots : undefined;
 
   const stayers = activeParticipants.filter(x => x.staysOvernight !== false);
@@ -255,20 +256,32 @@ function calcParticipantBaseCuota(paseo, participantId) {
   activeParticipants.forEach(part => {
     const pSlots = part.mealSlots;
     Object.keys(categoryCosts).forEach(cat => {
-      const isGeneral = cat === "Mercado General" || cat === "Bebidas" || cat === "Snacks" || cat === "Desayuno" || cat === "Almuerzo" || cat === "Cena"; // Fallback
-      const attends = isGeneral || !pSlots || pSlots.includes(cat);
-      if (attends) {
-         categoryDivisors[cat] = (categoryDivisors[cat] || 0) + 1;
+      const isGeneral = cat === "Mercado General" || cat === "Snacks" || cat === "Bebidas No Alcohólicas" || cat === "Bebidas" || cat === "Desayuno" || cat === "Almuerzo" || cat === "Cena";
+      if (cat === "Bebidas Alcohólicas") {
+        if (part.drinksAlcohol !== false) {
+          categoryDivisors[cat] = (categoryDivisors[cat] || 0) + 1;
+        }
+      } else {
+        const attends = isGeneral || !pSlots || pSlots.includes(cat);
+        if (attends) {
+           categoryDivisors[cat] = (categoryDivisors[cat] || 0) + 1;
+        }
       }
     });
   });
 
   let myFood = 0;
   Object.keys(categoryCosts).forEach(cat => {
-    const isGeneral = cat === "Mercado General" || cat === "Bebidas" || cat === "Snacks" || cat === "Desayuno" || cat === "Almuerzo" || cat === "Cena";
-    const myAttends = isGeneral || !mealSlots || mealSlots.includes(cat);
-    if (myAttends && categoryDivisors[cat] > 0) {
-       myFood += categoryCosts[cat] / categoryDivisors[cat];
+    if (cat === "Bebidas Alcohólicas") {
+      if (drinksAlcohol && categoryDivisors[cat] > 0) {
+        myFood += categoryCosts[cat] / categoryDivisors[cat];
+      }
+    } else {
+      const isGeneral = cat === "Mercado General" || cat === "Snacks" || cat === "Bebidas No Alcohólicas" || cat === "Bebidas" || cat === "Desayuno" || cat === "Almuerzo" || cat === "Cena";
+      const myAttends = isGeneral || !mealSlots || mealSlots.includes(cat);
+      if (myAttends && categoryDivisors[cat] > 0) {
+         myFood += categoryCosts[cat] / categoryDivisors[cat];
+      }
     }
   });
 
@@ -867,8 +880,8 @@ function ParticipantPayRow({
   const baseBudget = paseo.finance?.totalBudget || 0;
   const ingredients = paseo.logistics?.ingredients || [];
   
-  const liquorCost = ingredients.filter(i => i.category === "Bebidas").reduce((sum, item) => sum + (item.actualCost || item.estimatedCost || 0), 0);
-  const generalMarket = ingredients.filter(i => i.category !== "Bebidas").reduce((sum, item) => sum + (item.actualCost || item.estimatedCost || 0), 0);
+  const liquorCost = ingredients.filter(i => i.category === "Bebidas Alcohólicas" || i.category === "Bebidas").reduce((sum, item) => sum + (item.actualCost || item.estimatedCost || 0), 0);
+  const generalMarket = ingredients.filter(i => i.category !== "Bebidas Alcohólicas" && i.category !== "Bebidas").reduce((sum, item) => sum + (item.actualCost || item.estimatedCost || 0), 0);
   const totalGeneral = baseBudget + generalMarket;
   const marketReal = liquorCost + generalMarket;
   const { lblAlojamiento, lblMercado } = getLabels(paseo);
@@ -895,18 +908,30 @@ function ParticipantPayRow({
     activeParticipants.forEach(part => {
       const pSlots = part.mealSlots;
       Object.keys(categoryCosts).forEach(cat => {
-        const isGeneral = cat === "Mercado General" || cat === "Bebidas" || cat === "Snacks" || cat === "Desayuno" || cat === "Almuerzo" || cat === "Cena";
-        if (isGeneral || !pSlots || pSlots.includes(cat)) {
-           categoryDivisors[cat] = (categoryDivisors[cat] || 0) + 1;
+        const isGeneral = cat === "Mercado General" || cat === "Snacks" || cat === "Bebidas No Alcohólicas" || cat === "Bebidas" || cat === "Desayuno" || cat === "Almuerzo" || cat === "Cena";
+        if (cat === "Bebidas Alcohólicas") {
+          if (part.drinksAlcohol !== false) {
+            categoryDivisors[cat] = (categoryDivisors[cat] || 0) + 1;
+          }
+        } else {
+          if (isGeneral || !pSlots || pSlots.includes(cat)) {
+             categoryDivisors[cat] = (categoryDivisors[cat] || 0) + 1;
+          }
         }
       });
     });
 
     Object.keys(categoryCosts).forEach(cat => {
-      const isGeneral = cat === "Mercado General" || cat === "Bebidas" || cat === "Snacks" || cat === "Desayuno" || cat === "Almuerzo" || cat === "Cena";
-      const pSlots = participant.mealSlots;
-      if (isGeneral || !pSlots || pSlots.includes(cat)) {
-         if (categoryDivisors[cat] > 0) myMarket += categoryCosts[cat] / categoryDivisors[cat];
+      if (cat === "Bebidas Alcohólicas") {
+        if (participant.drinksAlcohol !== false && categoryDivisors[cat] > 0) {
+          myMarket += categoryCosts[cat] / categoryDivisors[cat];
+        }
+      } else {
+        const isGeneral = cat === "Mercado General" || cat === "Snacks" || cat === "Bebidas No Alcohólicas" || cat === "Bebidas" || cat === "Desayuno" || cat === "Almuerzo" || cat === "Cena";
+        const pSlots = participant.mealSlots;
+        if (isGeneral || !pSlots || pSlots.includes(cat)) {
+           if (categoryDivisors[cat] > 0) myMarket += categoryCosts[cat] / categoryDivisors[cat];
+        }
       }
     });
   } else {
@@ -965,12 +990,16 @@ function ParticipantPayRow({
             <div className="w-full mt-0.5 flex gap-2 text-[10px] text-slate-400">
               {isLongTrip ? (
                 <>
-                  <span>{participant.staysOvernight !== false ? "🏠 Hospedaje" : "🚫 Sin Hospedaje"}</span>
+                  <span>{participant.staysOvernight !== false ? "🏠 Hospedaje" : "🚫 Hospedaje"}</span>
+                  <span>&middot;</span>
+                  <span>{participant.drinksAlcohol !== false ? "🍻 Licor" : "🚫 Licor"}</span>
                   <span>&middot;</span>
                   <span>{participant.mealSlots === undefined ? "🍳 Todas las comidas" : `🍳 ${participant.mealSlots.length} comidas`}</span>
                 </>
               ) : (
-                <span>Cuota General</span>
+                <>
+                  <span>{participant.drinksAlcohol !== false ? "🍻 Toma licor" : "🚫 Sin licor"}</span>
+                </>
               )}
             </div>
 
@@ -1320,12 +1349,13 @@ function ParticipantSettingsModal({ participant, paseo, onClose }) {
   const slots = isLongTrip ? generateMealSlots(winnerDate?.startDate || paseo?.fechaIda, duration.days) : [];
 
   const [staysOvernight, setStaysOvernight] = useState(participant?.staysOvernight !== false);
+  const [drinksAlcohol, setDrinksAlcohol] = useState(participant?.drinksAlcohol !== false);
   const [mealSlots, setMealSlots] = useState(participant?.mealSlots || undefined);
 
   const handleToggleMeal = (id) => {
     let current = mealSlots;
     if (current === undefined) {
-      current = slots.filter(s => s.id !== "Mercado General").map(s => s.id);
+      current = slots.filter(s => s.id !== "Mercado General" && s.id !== "Snacks" && s.id !== "Bebidas Alcohólicas" && s.id !== "Bebidas No Alcohólicas").map(s => s.id);
     }
     if (current.includes(id)) {
       setMealSlots(current.filter(x => x !== id));
@@ -1337,7 +1367,7 @@ function ParticipantSettingsModal({ participant, paseo, onClose }) {
   const handleSave = () => {
     const updatedParticipants = paseo.participants.map(p => 
       p.id === participant.id 
-        ? { ...p, staysOvernight, mealSlots } 
+        ? { ...p, staysOvernight, drinksAlcohol, mealSlots } 
         : p
     );
     usePaseo.getState().updatePaseo(paseo.id, { participants: updatedParticipants });
@@ -1358,8 +1388,8 @@ function ParticipantSettingsModal({ participant, paseo, onClose }) {
         
         <p className="text-sm font-bold text-slate-600 mb-4">{participant.name}</p>
 
-        {isLongTrip ? (
-          <div className="space-y-6 max-h-[60vh] overflow-y-auto pb-4 pr-2">
+        <div className="space-y-6 max-h-[60vh] overflow-y-auto pb-4 pr-2">
+          {isLongTrip && (
             <div>
               <label className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl cursor-pointer">
                 <input 
@@ -1375,11 +1405,29 @@ function ParticipantSettingsModal({ participant, paseo, onClose }) {
                 <div className="text-xl">🏠</div>
               </label>
             </div>
+          )}
 
+          <div>
+            <label className="flex items-center gap-3 p-3 bg-fuchsia-50 border border-fuchsia-200 rounded-2xl cursor-pointer">
+              <input 
+                type="checkbox" 
+                checked={drinksAlcohol}
+                onChange={(e) => setDrinksAlcohol(e.target.checked)}
+                className="w-5 h-5 rounded text-fuchsia-500 focus:ring-fuchsia-500 border-fuchsia-300"
+              />
+              <div className="flex-1">
+                <p className="font-bold text-slate-800 text-sm">¿Toma Bebidas Alcohólicas?</p>
+                <p className="text-xs text-slate-500">Participa en la compra de licor</p>
+              </div>
+              <div className="text-xl">🍻</div>
+            </label>
+          </div>
+
+          {isLongTrip && (
             <div>
               <p className="text-sm font-extrabold text-slate-800 mb-3">Momentos de comida</p>
               <div className="space-y-2">
-                {slots.filter(s => s.id !== "Mercado General").map(slot => {
+                {slots.filter(s => s.id !== "Mercado General" && s.id !== "Snacks" && s.id !== "Bebidas Alcohólicas" && s.id !== "Bebidas No Alcohólicas").map(slot => {
                   const isChecked = mealSlots === undefined || mealSlots.includes(slot.id);
                   return (
                     <label key={slot.id} className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-2xl cursor-pointer">
@@ -1398,12 +1446,8 @@ function ParticipantSettingsModal({ participant, paseo, onClose }) {
                 })}
               </div>
             </div>
-          </div>
-        ) : (
-          <div className="text-sm text-slate-500 bg-orange-50 p-4 rounded-xl">
-            Este evento no admite prorrateo complejo por ser de tipo {paseo.category}. Todos los participantes activos dividen la vaca en partes iguales.
-          </div>
-        )}
+          )}
+        </div>
 
         <div className="mt-6">
           <Button variant="primary" fullWidth onClick={handleSave}>
