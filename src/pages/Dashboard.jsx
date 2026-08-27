@@ -416,7 +416,8 @@ ${url}`;
                       <Link2 size={16} />
                     </button>
 
-                )}
+                </div>
+)}
               </div>
             ))}
           </div>
