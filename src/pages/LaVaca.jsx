@@ -866,6 +866,7 @@ function ParticipantPayRow({
   currentUser,
   isLocked,
   onOpenSettings,
+  simplifiedDebts = [],
 }) {
   const [expanded, setExpanded] = useState(false);
   const isActive = participant.status !== "cancelled";
@@ -941,6 +942,122 @@ function ParticipantPayRow({
     myMarket = generalMarket / div + liquorCost / div;
   }
 
+
+
+  const handleDownloadIndividualPDF = (e) => {
+    e.stopPropagation();
+    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    const orange = [249, 115, 22];
+    const slate800 = [30, 41, 59];
+    const slate400 = [148, 163, 184];
+    const greenColor = [22, 163, 74];
+    const pageW = 210;
+    const margin = 18;
+    let y = 0;
+
+    // Header
+    doc.setFillColor(...orange);
+    doc.rect(0, 0, pageW, 36, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.text("PaseoYa", margin, 16);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text("Recibo Individual", margin, 24);
+    doc.setFontSize(8);
+    doc.text(new Date().toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" }), margin, 31);
+
+    y = 48;
+    doc.setTextColor(...slate800);
+    doc.setFontSize(15);
+    doc.setFont("helvetica", "bold");
+    doc.text(`${participant.name}`, margin, y);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(...slate400);
+    doc.text(`${paseo.emoji || ""} ${paseo.name}`, margin, y + 6);
+    y += 16;
+
+    // Summary Box
+    doc.setFillColor(254, 243, 199);
+    doc.roundedRect(margin, y, pageW - margin * 2, 28, 3, 3, "F");
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...slate800);
+    doc.text("TOTAL A PAGAR", margin + 4, y + 10);
+    
+    doc.setFontSize(16);
+    doc.setTextColor(...orange);
+    doc.text(new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(totalCuota), pageW - margin - 4, y + 10, { align: "right" });
+    
+    doc.setFontSize(10);
+    if (participant.hasPaid) {
+      doc.setTextColor(...greenColor);
+      doc.text("ESTADO: PAGADO", margin + 4, y + 20);
+    } else {
+      doc.setTextColor(220, 38, 38);
+      doc.text("ESTADO: PENDIENTE", margin + 4, y + 20);
+    }
+    y += 40;
+
+    // Breakdown
+    doc.setTextColor(...slate800);
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text("Desglose de la Cuota", margin, y);
+    y += 8;
+
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    if (isLongTrip) {
+      doc.text("Alojamiento:", margin, y);
+      doc.text(new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(myBaseBudget), pageW - margin, y, { align: "right" });
+      y += 6;
+      doc.text("Alimentacion y Bebidas:", margin, y);
+      doc.text(new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(myMarket), pageW - margin, y, { align: "right" });
+      y += 6;
+    } else {
+      doc.text("Cuota Base (Presupuesto + Mercado):", margin, y);
+      doc.text(new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(baseCuota), pageW - margin, y, { align: "right" });
+      y += 6;
+    }
+    
+    if (hasBusAddon) {
+      doc.text("Transporte (Bus):", margin, y);
+      doc.text(new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(busAddon), pageW - margin, y, { align: "right" });
+      y += 6;
+    }
+
+    y += 10;
+    
+    // Instructions (Debts)
+    if (!participant.hasPaid) {
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("Instrucciones de Pago", margin, y);
+      y += 8;
+      
+      const normalizeName = (n) => (n || "").trim().toLowerCase();
+      const myNormName = normalizeName(participant.name);
+      const myDebts = simplifiedDebts.filter(d => normalizeName(d.debtor) === myNormName);
+      
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      if (myDebts.length > 0) {
+        myDebts.forEach(d => {
+          doc.text(`Transferir a: ${d.creditor.charAt(0).toUpperCase() + d.creditor.slice(1)}`, margin, y);
+          doc.text(new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(d.amount), pageW - margin, y, { align: "right" });
+          y += 6;
+        });
+      } else {
+        doc.text("Paga tu cuota al organizador principal.", margin, y);
+        y += 6;
+      }
+    }
+
+    doc.save(`Recibo_${participant.name.replace(/\s+/g, '_')}.pdf`);
+  };
 
   return (
     <div
@@ -1195,6 +1312,15 @@ function ParticipantPayRow({
               </>
             )}
           </div>
+          
+          {/* Individual PDF Button */}
+          <button
+            onClick={handleDownloadIndividualPDF}
+            className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 bg-orange-50 text-orange-600 border border-orange-200 rounded-xl text-xs font-extrabold hover:bg-orange-100 transition-colors"
+          >
+            <FileDown size={14} />
+            Descargar Recibo Individual
+          </button>
         </div>
       )}
     </div>
@@ -2219,6 +2345,7 @@ export default function LaVaca() {
                     key={p.id}
                     participant={p}
                     paseo={paseo}
+                      simplifiedDebts={simplifiedDebts}
                     onToggle={togglePayment}
                     currentUser={currentUser}
                     isLocked={isLocked}
