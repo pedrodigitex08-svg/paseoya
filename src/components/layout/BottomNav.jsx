@@ -14,7 +14,9 @@ export default function BottomNav() {
   const isShortWithoutLogistics = paseo?.category === "rumba" || paseo?.category === "restaurante" || paseo?.category === "regalo";
 
   // ── Determina la ruta de "Inicio" según el rol del usuario actual ──
-  const isHost = state.currentUser?.role === "host";
+  // Comprobamos si es host por su rol actual, o si este dispositivo CREÓ este paseo específico.
+  const isCreatorDevice = state.paseos?.some(p => p.id === paseo?.id);
+  const isHost = state.currentUser?.role === "host" || isCreatorDevice;
 
   // Si no hay slug, preparamos un fallback seguro a la raíz.
   const homeRoute = isHost
