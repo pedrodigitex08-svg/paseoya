@@ -9,6 +9,7 @@ import Voting from "./pages/Voting";
 import Logistics from "./pages/Logistics";
 import LaVaca from "./pages/LaVaca";
 import GuestInvite from "./pages/GuestInvite";
+import GuestRecovery from "./pages/GuestRecovery";
 import Landing from "./pages/Landing";
 
 export default function App() {
@@ -39,6 +40,9 @@ export default function App() {
 
           {/* Pantalla 6: Invitación del invitado — Fase 4 */}
           <Route path="/paseo/:slug/invite" element={<GuestInvite />} />
+
+          {/* Recuperación de Sesión de Invitado */}
+          <Route path="/paseo/:slug/recover/:guestId" element={<GuestRecovery />} />
 
           {/* Fallback - Atrapa cualquier ruta sin slug o inválida y la manda al creador */}
           <Route path="*" element={<Navigate to="/" replace />} />
