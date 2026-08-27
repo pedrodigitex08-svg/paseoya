@@ -1,5 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { usePaseo } from "../store/usePaseoStore";
+import { supabase } from "../store/supabase";
+import { useState, useEffect } from "react";
+import { LogOut, Plus, MapPin } from "lucide-react";
 import {
   Map,
   Calculator,
@@ -27,6 +31,121 @@ import {
 } from "lucide-react";
 
 export default function Landing() {
+
+  const navigate = useNavigate();
+  const { state, signInWithGoogle, signOut, loadPaseoFromCloud } = usePaseo();
+  const [myPaseos, setMyPaseos] = useState([]);
+  const [loadingPaseos, setLoadingPaseos] = useState(false);
+
+  // Fetch paseos from Supabase when session exists
+  useEffect(() => {
+    const fetchMyPaseos = async () => {
+      if (!state.session?.user?.id) return;
+      setLoadingPaseos(true);
+      try {
+        const { data, error } = await supabase
+          .from('paseos')
+          .select('data')
+          .filter('data->>hostId', 'eq', state.session.user.id);
+        
+        if (data) {
+          setMyPaseos(data.map(d => d.data));
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      setLoadingPaseos(false);
+    };
+    fetchMyPaseos();
+  }, [state.session]);
+
+  if (state.session) {
+    return (
+      <div className="min-h-screen bg-[#FFFBF7] font-sans selection:bg-orange-200">
+        <nav className="fixed top-0 w-full bg-[#FFFBF7]/90 backdrop-blur-xl z-50 border-b border-orange-100/50">
+          <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/20">
+                <Map size={18} className="text-white" />
+              </div>
+              <span className="font-extrabold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">
+                PaseoYa
+              </span>
+            </div>
+            <button 
+              onClick={signOut}
+              className="flex items-center gap-2 text-slate-500 hover:text-red-500 transition-colors text-sm font-bold"
+            >
+              <LogOut size={16} /> Salir
+            </button>
+          </div>
+        </nav>
+
+        <main className="pt-24 pb-20 px-6 max-w-5xl mx-auto">
+          <div className="mb-8">
+            <h1 className="text-3xl font-extrabold text-slate-900">Mis Paseos</h1>
+            <p className="text-slate-500 mt-2">Bienvenido de vuelta. Aquí están todos los paseos que has organizado.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Link 
+              to="/crear"
+              className="h-48 border-2 border-dashed border-orange-200 bg-orange-50/50 rounded-3xl flex flex-col items-center justify-center text-orange-500 hover:bg-orange-50 transition-colors group"
+            >
+              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <Plus size={24} />
+              </div>
+              <span className="font-bold">Crear Nuevo Paseo</span>
+            </Link>
+
+            {loadingPaseos ? (
+              <div className="h-48 rounded-3xl bg-slate-100 animate-pulse flex items-center justify-center text-slate-400 font-bold">
+                Cargando...
+              </div>
+            ) : (
+              myPaseos.map((paseo) => (
+                <div 
+                  key={paseo.id}
+                  onClick={() => {
+                    // Cargar al store activo y navegar
+                    loadPaseoFromCloud(paseo.slug).then(() => {
+                      navigate(`/paseo/${paseo.slug}`);
+                    });
+                  }}
+                  className="h-48 bg-white border border-slate-200 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:shadow-orange-500/10 hover:border-orange-200 transition-all cursor-pointer flex flex-col justify-between group"
+                >
+                  <div>
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-3xl">{paseo.emoji || "🏕️"}</span>
+                      <span className="px-2 py-1 bg-slate-100 text-slate-500 text-[10px] font-bold rounded-lg uppercase">
+                        {paseo.category || "Finca"}
+                      </span>
+                    </div>
+                    <h3 className="font-extrabold text-lg text-slate-800 line-clamp-1 group-hover:text-orange-600 transition-colors">
+                      {paseo.name}
+                    </h3>
+                    <div className="flex items-center gap-1.5 text-slate-400 mt-1">
+                      <MapPin size={14} />
+                      <span className="text-xs font-medium truncate">{paseo.location || "Destino por definir"}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-50">
+                    <div className="flex items-center gap-1.5 text-slate-500">
+                      <Users size={14} />
+                      <span className="text-xs font-bold">{paseo.participants?.length || 1} invitados</span>
+                    </div>
+                    <ChevronRight size={16} className="text-slate-300 group-hover:text-orange-500 group-hover:translate-x-1 transition-all" />
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#FFFBF7] font-sans selection:bg-orange-200 selection:text-orange-900 overflow-x-hidden">
       <CustomAnimations />
@@ -46,12 +165,12 @@ export default function Landing() {
             <a href="#how-it-works" className="text-sm font-semibold text-slate-500 hover:text-orange-600 hidden md:block transition-colors">
               Descubre las Funciones
             </a>
-            <Link
-              to="/crear"
+            <button
+              onClick={signInWithGoogle}
               className="bg-orange-500 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-orange-600 transition-all hover:shadow-xl hover:shadow-orange-500/30 active:scale-95 flex items-center gap-2"
             >
-              Empezar Gratis <ArrowRight size={16} />
-            </Link>
+              Ingresar con Google <ArrowRight size={16} />
+            </button>
           </div>
         </div>
       </nav>
@@ -78,13 +197,13 @@ export default function Landing() {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in-up animation-delay-200">
-            <Link
-              to="/crear"
+            <button
+              onClick={signInWithGoogle}
               className="group flex items-center justify-center gap-2 w-full sm:w-auto px-10 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-extrabold text-lg transition-all shadow-xl shadow-orange-500/30 active:scale-95"
             >
-              Crear mi primer paseo
+              Ingresar con Google
               <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
-            </Link>
+            </button>
           </div>
         </div>
       </section>
@@ -204,12 +323,12 @@ export default function Landing() {
           <h2 className="text-5xl md:text-7xl font-extrabold text-white mb-8 tracking-tighter">
             Conviértete en el mejor organizador de tu grupo.
           </h2>
-          <Link
-            to="/crear"
+          <button
+            onClick={signInWithGoogle}
             className="inline-flex items-center gap-3 px-10 py-5 bg-orange-500 text-white rounded-full font-extrabold text-xl transition-all hover:scale-105 hover:bg-orange-600 shadow-[0_0_40px_rgba(249,115,22,0.4)]"
           >
-            Comenzar mi paseo ahora <Sparkles size={24} className="text-white" />
-          </Link>
+            Ingresar con Google <Sparkles size={24} className="text-white" />
+          </button>
         </div>
       </section>
       

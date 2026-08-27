@@ -40,6 +40,7 @@ export const createPaseoTemplate = (data) => {
     description: data.description || "",
     createdAt: new Date().toISOString(),
     createdBy,
+    hostId: data.hostId || null,
 
     // 🛡️ GUARDADO DUAL: Nos aseguramos de que el Dashboard lo lea sí o sí
     location: locationText,
@@ -61,6 +62,7 @@ export const createPaseoTemplate = (data) => {
       {
         id: "host_1",
         name: createdBy,
+    hostId: data.hostId || null,
         role: "host",
         status: "confirmed",
         hasPaid: true,
@@ -114,6 +116,7 @@ const initialDataState = {
     role: "guest",
   },
   ui: { loading: false, error: null },
+  session: null,
 };
 
 export const usePaseo = create(
@@ -151,6 +154,30 @@ export const usePaseo = create(
         state: initialDataState,
 
         // ── ☁️ FUNCIONES DE LA NUBE (SUPABASE) ──────────────────────────────
+        
+        // ── AUTH (SUPABASE) ──────────────────────────────────────────────
+        checkSession: async () => {
+          const { data: { session } } = await supabase.auth.getSession();
+          set((store) => ({ state: { ...store.state, session } }));
+          
+          // Escuchar cambios
+          supabase.auth.onAuthStateChange((_event, session) => {
+            set((store) => ({ state: { ...store.state, session } }));
+          });
+        },
+        signInWithGoogle: async () => {
+          await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+              redirectTo: window.location.origin
+            }
+          });
+        },
+        signOut: async () => {
+          await supabase.auth.signOut();
+          set((store) => ({ state: { ...store.state, session: null } }));
+        },
+
         savePaseoToCloud: async (paseoData) => {
           try {
             const { error } = await supabase
@@ -238,6 +265,7 @@ export const usePaseo = create(
               currentUser: {
                 id: "host_1",
                 name: newPaseo.createdBy,
+    hostId: data.hostId || null,
                 role: "host",
               },
             },

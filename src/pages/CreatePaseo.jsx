@@ -113,6 +113,22 @@ const CATEGORIES = [
 export default function CreatePaseo() {
   const navigate = useNavigate();
 
+  const { state } = usePaseo();
+  
+  // Redirigir si no hay sesión
+  useEffect(() => {
+    if (!state.session) {
+      navigate("/");
+    } else {
+      // Autocompletar nombre
+      const name = state.session.user?.user_metadata?.full_name || state.session.user?.email || "Anfitrión";
+      setFormData(prev => ({...prev, anfitrion: name}));
+    }
+  }, [state.session, navigate]);
+
+  if (!state.session) return null;
+
+
   // 🛠️ Extracción segura de la función desde Zustand
   const savePaseoToCloud = usePaseo((state) => state.savePaseoToCloud);
 
