@@ -12,6 +12,7 @@ import {
   Unlock,
   ShieldAlert,
   Trash2,
+  Link2,
   Backpack,
   Dices,
   Calendar
@@ -398,6 +399,23 @@ export default function Dashboard() {
                   >
                     <Trash2 size={16} />
                   </button>
+
+                    <button
+                      onClick={() => {
+                        const url = `${window.location.origin}/paseo/${slug}/recover/${p.id}`;
+                        const msg = `¡Hola ${p.name.split(' ')[0]}! 🏕️
+
+Parece que se te cerró la sesión de PaseoYa. Toca este link mágico para recuperar tu perfil y volver al parche:
+
+${url}`;
+                        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+                      }}
+                      className="p-2 text-slate-300 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
+                      title="Enviar Link de Rescate"
+                    >
+                      <Link2 size={16} />
+                    </button>
+
                 )}
               </div>
             ))}
