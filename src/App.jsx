@@ -1,7 +1,7 @@
 // App.jsx — Router + Provider (v4 — Fase 4: Invitado)
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { PaseoProvider } from "./store/usePaseoStore";
+import { PaseoProvider, usePaseo } from "./store/usePaseoStore";
 
 import CreatePaseo from "./pages/CreatePaseo";
 import Dashboard from "./pages/Dashboard";
@@ -13,9 +13,20 @@ import GuestInvite from "./pages/GuestInvite";
 import GuestRecovery from "./pages/GuestRecovery";
 import Landing from "./pages/Landing";
 
+
+function AuthListener() {
+  const { checkSession } = usePaseo();
+  useEffect(() => {
+    checkSession();
+  }, []);
+  return null;
+}
+
 export default function App() {
+
   return (
     <PaseoProvider>
+      <AuthListener />
       <BrowserRouter>
         <Routes>
           {/* Pantalla 0: Landing Page */}
