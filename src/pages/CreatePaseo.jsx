@@ -180,6 +180,7 @@ export default function CreatePaseo() {
       createdBy: formData.anfitrion,
       location: formData.ubicacion,
       isSameDay: formData.esPasadia,
+      hostId: state.session.user.id,
     };
 
     // Generamos el objeto completo del paseo, que incluye id y slug únicos

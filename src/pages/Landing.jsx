@@ -33,13 +33,12 @@ import {
 export default function Landing() {
 
   const navigate = useNavigate();
-  const { state, signInWithGoogle, signOut, loadPaseoFromCloud, checkSession } = usePaseo();
+  const { state, signInWithGoogle, signOut, loadPaseoFromCloud } = usePaseo();
   const [myPaseos, setMyPaseos] = useState([]);
   const [loadingPaseos, setLoadingPaseos] = useState(false);
 
   // Fetch paseos from Supabase when session exists
   useEffect(() => {
-    checkSession();
     const fetchMyPaseos = async () => {
       if (!state.session?.user?.id) return;
       setLoadingPaseos(true);
