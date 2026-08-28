@@ -201,7 +201,7 @@ function calcAdjustedTotalBudget(paseo) {
   if (!paseo) return 0;
   const ingredients = paseo.logistics?.ingredients || [];
   const marketReal = ingredients.reduce(
-    (sum, item) => sum + (item.actualCost || item.estimatedCost || 0),
+    (sum, item) => sum + ((item.bought && item.actualCost !== null) ? item.actualCost : (item.estimatedCost || 0)),
     0
   );
   return (paseo.finance?.totalBudget || 0) + marketReal;
@@ -881,8 +881,8 @@ function ParticipantPayRow({
   const baseBudget = paseo.finance?.totalBudget || 0;
   const ingredients = paseo.logistics?.ingredients || [];
   
-  const liquorCost = ingredients.filter(i => i.category === "Bebidas Alcohólicas" || i.category === "Bebidas").reduce((sum, item) => sum + (item.actualCost || item.estimatedCost || 0), 0);
-  const generalMarket = ingredients.filter(i => i.category !== "Bebidas Alcohólicas" && i.category !== "Bebidas").reduce((sum, item) => sum + (item.actualCost || item.estimatedCost || 0), 0);
+  const liquorCost = ingredients.filter(i => i.category === "Bebidas Alcohólicas" || i.category === "Bebidas").reduce((sum, item) => sum + ((item.bought && item.actualCost !== null) ? item.actualCost : (item.estimatedCost || 0)), 0);
+  const generalMarket = ingredients.filter(i => i.category !== "Bebidas Alcohólicas" && i.category !== "Bebidas").reduce((sum, item) => sum + ((item.bought && item.actualCost !== null) ? item.actualCost : (item.estimatedCost || 0)), 0);
   const totalGeneral = baseBudget + generalMarket;
   const marketReal = liquorCost + generalMarket;
   const { lblAlojamiento, lblMercado } = getLabels(paseo);
@@ -1702,10 +1702,18 @@ export default function LaVaca() {
   const adjustedTotalBudget = calcAdjustedTotalBudget(paseo);
   const ingredients = paseo.logistics?.ingredients || [];
   const marketReal = ingredients.reduce(
-    (sum, item) => sum + (item.actualCost || item.estimatedCost || 0),
+    (sum, item) => sum + ((item.bought && item.actualCost !== null) ? item.actualCost : (item.estimatedCost || 0)),
     0
   );
-  const recaudoPct = calcRecaudo(paseo);
+  
+    const marketEstimated = ingredients.reduce(
+      (sum, item) => sum + (item.estimatedCost || 0),
+      0
+    );
+    const hasBoughtItems = ingredients.some(i => i.bought);
+    const marketDiff = marketEstimated - marketReal;
+
+    const recaudoPct = calcRecaudo(paseo);
   const baseCuota = calcParticipantBaseCuota(paseo, currentUser?.id);
   const myTransport = calcBusAddonForPerson(paseo, currentUser?.id);
   const myTotal = baseCuota + myTransport;
@@ -2237,6 +2245,15 @@ export default function LaVaca() {
                   {formatCOP(adjustedTotalBudget)}
                 </span>
               </div>
+                {hasBoughtItems && marketDiff !== 0 && (
+                  <div className={`mt-3 p-2 rounded-lg text-xs font-bold flex items-center justify-center text-center leading-tight ${marketDiff > 0 ? "bg-green-500/20 text-green-100" : "bg-red-500/20 text-red-100"}`}>
+                    {marketDiff > 0 ? (
+                      <>✨ Ahorro en mercado: sobraron {formatCOP(marketDiff)}</>
+                    ) : (
+                      <>⚠️ El presupuesto subió: faltaron {formatCOP(Math.abs(marketDiff))}</>
+                    )}
+                  </div>
+                )}
             </div>
 
             {baseCuota > 0 && (
