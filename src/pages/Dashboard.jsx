@@ -45,6 +45,7 @@ export default function Dashboard() {
   const [isLocking, setIsLocking] = useState(false);
   const [showPacking, setShowPacking] = useState(false);
   const [showRoulette, setShowRoulette] = useState(false);
+  const [showCountdownShare, setShowCountdownShare] = useState(false);
 
   // 🔒 Detectamos si el paseo ya fue cerrado
   const isLocked = paseo?.estado === "finalizado";
