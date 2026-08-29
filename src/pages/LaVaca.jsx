@@ -890,7 +890,9 @@ function ParticipantPayRow({
   const isLongTrip = ["finca", "playa", "montana", "otra-ciudad", "ciudad"].includes(paseo?.category || paseo?.categoria);
 
   let myBaseBudget = 0;
-  let myMarket = 0;
+    let myMarket = 0;
+    let myGeneralFood = 0;
+    let myLiquor = 0;
 
   if (isLongTrip) {
     const activeParticipants = paseo.participants?.filter(p => p.status !== "cancelled") || [];
@@ -925,21 +927,24 @@ function ParticipantPayRow({
     Object.keys(categoryCosts).forEach(cat => {
       if (cat === "Bebidas Alcohólicas") {
         if (participant.drinksAlcohol !== false && categoryDivisors[cat] > 0) {
-          myMarket += categoryCosts[cat] / categoryDivisors[cat];
-        }
+            myLiquor += categoryCosts[cat] / categoryDivisors[cat];
+          }
       } else {
         const isGeneral = cat === "Mercado General" || cat === "Snacks" || cat === "Bebidas No Alcohólicas" || cat === "Bebidas" || cat === "Desayuno" || cat === "Almuerzo" || cat === "Cena";
         const pSlots = participant.mealSlots;
         if (isGeneral || !pSlots || pSlots.includes(cat)) {
-           if (categoryDivisors[cat] > 0) myMarket += categoryCosts[cat] / categoryDivisors[cat];
-        }
+           if (categoryDivisors[cat] > 0) myGeneralFood += categoryCosts[cat] / categoryDivisors[cat];
+          }
       }
     });
+      myMarket = myGeneralFood + myLiquor;
   } else {
     const activeParticipants = paseo.participants?.filter(p => p.status !== "cancelled") || [];
     const div = activeParticipants.length || 1;
     myBaseBudget = baseBudget / div;
-    myMarket = generalMarket / div + liquorCost / div;
+      myGeneralFood = generalMarket / div;
+      myLiquor = liquorCost / div;
+      myMarket = myGeneralFood + myLiquor;
   }
 
 
@@ -1242,19 +1247,34 @@ function ParticipantPayRow({
               </div>
 
               {/* Item: Mercado (si hay) */}
-              {marketReal > 0 && (
-                <div className="flex items-start justify-between gap-2 text-slate-600">
-                  <div>
-                      <p className="font-bold text-slate-700">{lblMercado}</p>
-                    <p className="text-[10px] text-slate-400">
-                      {formatCOP(marketReal)} / {activeCount} pers.
-                    </p>
+              {/* Item: Mercado (si hay) */}
+                {generalMarket > 0 && (
+                  <div className="flex items-start justify-between gap-2 text-slate-600">
+                    <div>
+                        <p className="font-bold text-slate-700">{lblMercado}</p>
+                      <p className="text-[10px] text-slate-400">
+                        Total {formatCOP(generalMarket)}
+                      </p>
+                    </div>
+                    <span className="font-bold flex-shrink-0 text-slate-700">
+                      {formatCOP(myGeneralFood)}
+                    </span>
                   </div>
-                  <span className="font-bold flex-shrink-0 text-slate-700">
-                    {formatCOP(myMarket)}
-                  </span>
-                </div>
-              )}
+                )}
+                {/* Item: Licores (si hay) */}
+                {liquorCost > 0 && (
+                  <div className="flex items-start justify-between gap-2 text-slate-600 mt-2">
+                    <div>
+                        <p className="font-bold text-slate-700">🥂 Bebidas Alcohólicas</p>
+                      <p className="text-[10px] text-slate-400">
+                        Total {formatCOP(liquorCost)}
+                      </p>
+                    </div>
+                    <span className="font-bold flex-shrink-0 text-slate-700">
+                      {formatCOP(myLiquor)}
+                    </span>
+                  </div>
+                )}
 
               {/* Item: Transporte Individual (si hay) */}
               {hasBusAddon && (
@@ -2230,12 +2250,22 @@ export default function LaVaca() {
                     </span>
                   )}
                 </div>
-                <div className="flex justify-between items-center text-white/90 text-sm">
-                  <span>{lblMercadoMini}</span>
-                  <span className="font-semibold text-white">
-                    {formatCOP(marketReal)}
-                  </span>
-                </div>
+                {generalMarket > 0 && (
+                    <div className="flex justify-between items-center text-white/90 text-sm">
+                      <span>{lblMercadoMini}</span>
+                      <span className="font-semibold text-white">
+                        {formatCOP(generalMarket)}
+                      </span>
+                    </div>
+                  )}
+                  {liquorCost > 0 && (
+                    <div className="flex justify-between items-center text-white/90 text-sm">
+                      <span>🥂 Bebidas Alcohólicas</span>
+                      <span className="font-semibold text-white">
+                        {formatCOP(liquorCost)}
+                      </span>
+                    </div>
+                  )}
               </div>
               <div className="mt-2 pt-2 border-t border-white/20 flex justify-between items-center">
                 <span className="text-white font-extrabold text-sm">
