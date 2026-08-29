@@ -643,6 +643,15 @@ export default function GuestDashboard() {
           </div>
         )}
 
+        {/* BOTÓN DE CUENTA REGRESIVA */}
+        <button
+          onClick={() => setShowCountdownShare(true)}
+          className="w-full bg-orange-100 text-orange-600 rounded-2xl py-3.5 mt-2 font-bold flex items-center justify-center gap-2 hover:bg-orange-200 transition-colors"
+        >
+          <Camera size={18} />
+          Generar Cuenta Regresiva (IG)
+        </button>
+
         {/* 📍 PUNTO DE ENCUENTRO (Mapa + Clima) */}
         {confirmedLocation !== "Por definir" && !isVoting && (
           <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm flex items-center justify-between gap-4 animate-in fade-in duration-300">

@@ -285,6 +285,15 @@ export default function Dashboard() {
               </>
             )}
           </button>
+
+          {/* BOTÓN DE CUENTA REGRESIVA */}
+          <button
+            onClick={() => setShowCountdownShare(true)}
+            className="w-full bg-orange-100 text-orange-600 rounded-2xl py-3.5 mt-3 font-bold flex items-center justify-center gap-2 hover:bg-orange-200 transition-colors"
+          >
+            <Camera size={18} />
+            Generar Cuenta Regresiva (IG)
+          </button>
         </div>
 
         {/* 📍 PUNTO DE ENCUENTRO (Mapa + Clima) */}
