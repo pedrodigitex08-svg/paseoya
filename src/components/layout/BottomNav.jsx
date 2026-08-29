@@ -13,10 +13,12 @@ export default function BottomNav() {
   const paseo = state.activePaseo;
   const isShortWithoutLogistics = paseo?.category === "rumba" || paseo?.category === "restaurante" || paseo?.category === "regalo";
 
-  // ── Determina la ruta de "Inicio" según el rol del usuario actual ──
-  // Comprobamos si es host por su rol actual, o si este dispositivo CREÓ este paseo específico.
-  const isCreatorDevice = state.paseos?.some(p => p.id === paseo?.id);
-  const isHost = state.currentUser?.role === "host" || isCreatorDevice;
+  // 📌 Determina la ruta de "Inicio" según el rol del usuario actual 📌
+  // Verificamos si el usuario actual es el organizador de ESTE paseo en específico
+  const myParticipantRecord = paseo?.participants?.find(p => p.id === state.currentUser?.id);
+  const isHost = myParticipantRecord 
+    ? myParticipantRecord.role === "host" 
+    : state.currentUser?.role === "host";
 
   // Si no hay slug, preparamos un fallback seguro a la raíz.
   const homeRoute = isHost
