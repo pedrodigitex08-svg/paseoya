@@ -13,12 +13,17 @@ export default function BottomNav() {
   const paseo = state.activePaseo;
   const isShortWithoutLogistics = paseo?.category === "rumba" || paseo?.category === "restaurante" || paseo?.category === "regalo";
 
-  // 📌 Determina la ruta de "Inicio" según el rol del usuario actual 📌
-  // Verificamos si el usuario actual es el organizador de ESTE paseo en específico
+    // 📌 Determina la ruta de "Inicio" según el rol del usuario actual 📌
+  // La forma más segura de saber si es el host es comparar su sesión autenticada con el hostId del paseo.
+  // Si no hay hostId (paseo antiguo), usamos la lógica local asumiendo que es host_1.
+  const isAuthHost = paseo?.hostId && state.session?.user?.id && paseo.hostId === state.session.user.id;
+  
   const myParticipantRecord = paseo?.participants?.find(p => p.id === state.currentUser?.id);
-  const isHost = myParticipantRecord 
+  const isLocalHost = myParticipantRecord 
     ? myParticipantRecord.role === "host" 
     : state.currentUser?.role === "host";
+
+  const isHost = isAuthHost || (!paseo?.hostId && isLocalHost);
 
   // Si no hay slug, preparamos un fallback seguro a la raíz.
   const homeRoute = isHost
