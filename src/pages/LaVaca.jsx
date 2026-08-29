@@ -1725,6 +1725,8 @@ export default function LaVaca() {
     (sum, item) => sum + ((item.bought && item.actualCost !== null) ? item.actualCost : (item.estimatedCost || 0)),
     0
   );
+  const liquorCost = ingredients.filter(i => i.category === "Bebidas Alcohólicas").reduce((sum, item) => sum + ((item.bought && item.actualCost !== null) ? item.actualCost : (item.estimatedCost || 0)), 0);
+  const generalMarket = marketReal - liquorCost;
   
     const marketEstimated = ingredients.reduce(
       (sum, item) => sum + (item.estimatedCost || 0),
