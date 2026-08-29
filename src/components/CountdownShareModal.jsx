@@ -1,11 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Share, X, Download } from 'lucide-react';
+import { Share, X } from 'lucide-react';
 import html2canvas from 'html2canvas';
 
 export default function CountdownShareModal({ paseo, winnerDate, onClose }) {
   const [isCapturing, setIsCapturing] = useState(true);
   const [imageUrl, setImageUrl] = useState(null);
-  const [imageBlob, setImageBlob] = useState(null);
   
   const cardRef = useRef(null);
 
@@ -17,20 +16,17 @@ export default function CountdownShareModal({ paseo, winnerDate, onClose }) {
   
   const daysLeft = calculateDaysLeft();
 
-  // Generar la imagen automáticamente al abrir el modal para evitar bloqueos de Safari con navigator.share
   useEffect(() => {
     let isMounted = true;
     
     const generateImage = async () => {
       if (!cardRef.current) return;
       try {
-        // Pequeña pausa para asegurar que las fuentes/estilos estén listos
-        await new Promise(r => setTimeout(r, 800));
-        
+        await new Promise(r => setTimeout(r, 800)); // Wait for fonts
         if (!isMounted) return;
         
         const canvas = await html2canvas(cardRef.current, {
-          scale: 3, // Alta resolución
+          scale: window.devicePixelRatio > 1 ? 3 : 2,
           useCORS: true,
           backgroundColor: null,
           logging: false
@@ -39,67 +35,68 @@ export default function CountdownShareModal({ paseo, winnerDate, onClose }) {
         const url = canvas.toDataURL('image/png');
         if (!isMounted) return;
         setImageUrl(url);
-        
-        canvas.toBlob((blob) => {
-          if (!isMounted) return;
-          setImageBlob(blob);
-          setIsCapturing(false);
-        }, 'image/png');
-        
+        setIsCapturing(false);
       } catch (error) {
-        console.error("Error generando imagen:", error);
+        console.error("Error generating image:", error);
         if (isMounted) setIsCapturing(false);
       }
     };
     
     generateImage();
-    
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, []);
 
-  const handleShare = async () => {
-    if (!imageBlob) return;
-    
-    const file = new File([imageBlob], 'paseoya-countdown.png', { type: 'image/png' });
-
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try {
-        await navigator.share({
-          files: [file]
-        });
-      } catch (e) {
-        console.log('Error sharing:', e);
-      }
-    } else {
-      // Fallback: Descargar
+  const fallbackDownload = (url) => {
+    try {
       const a = document.createElement('a');
-      a.href = imageUrl;
-      a.download = `paseoya-${paseo.name.replace(/\s+/g, '-')}-countdown.png`;
+      a.href = url;
+      a.download = `paseoya-${paseo.name.replace(/\s+/g, '-')}.png`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+      alert("¡Imagen descargada! Revisa tu galería para compartirla.");
+    } catch (e) {
+      alert("Mantén presionada la imagen para guardarla y compartirla en tus historias.");
     }
   };
 
-  const getBackgroundColors = () => {
-    const cat = paseo?.category || paseo?.categoria;
-    if (cat === "playa") return { bg: "from-[#00c6ff] to-[#0072ff]", accent1: "bg-yellow-300/40", accent2: "bg-pink-400/30" };
-    if (cat === "finca" || cat === "montana") return { bg: "from-[#11998e] to-[#38ef7d]", accent1: "bg-yellow-200/40", accent2: "bg-emerald-200/30" };
-    if (cat === "rumba") return { bg: "from-[#8E2DE2] to-[#4A00E0]", accent1: "bg-pink-500/40", accent2: "bg-cyan-400/30" };
-    // Default tropical (parecido al mockup)
-    return { bg: "from-[#f2709c] to-[#ff9472]", accent1: "bg-yellow-300/40", accent2: "bg-cyan-300/30" };
+  const handleShare = async () => {
+    if (!imageUrl) {
+      alert("La imagen aún no está lista. Espera un momento.");
+      return;
+    }
+    
+    try {
+      const res = await fetch(imageUrl);
+      const blob = await res.blob();
+      const file = new File([blob], 'paseoya-countdown.png', { type: 'image/png' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file] });
+        } catch (e) {
+          if (e.name !== "AbortError") fallbackDownload(imageUrl);
+        }
+      } else {
+        fallbackDownload(imageUrl);
+      }
+    } catch (e) {
+      fallbackDownload(imageUrl);
+    }
   };
 
-  const colors = getBackgroundColors();
+  const gradientBg = `
+    radial-gradient(circle at 0% 0%, #00d2ff 0%, transparent 60%),
+    radial-gradient(circle at 100% 0%, #ff8a00 0%, transparent 60%),
+    radial-gradient(circle at 0% 100%, #e100ff 0%, transparent 60%),
+    radial-gradient(circle at 100% 100%, #00d2ff 0%, transparent 60%),
+    #ff9a9e
+  `;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4">
-      {/* Modal Container */}
       <div className="bg-white rounded-[32px] overflow-hidden shadow-2xl w-full max-w-sm flex flex-col animate-in fade-in zoom-in duration-300">
         
-        {/* Header */}
         <div className="p-4 flex items-center justify-between border-b border-slate-100">
           <h3 className="font-extrabold text-slate-800">Tu Cuenta Regresiva</h3>
           <button onClick={onClose} className="p-2 bg-slate-100 text-slate-500 rounded-full hover:bg-slate-200 transition-colors">
@@ -107,89 +104,95 @@ export default function CountdownShareModal({ paseo, winnerDate, onClose }) {
           </button>
         </div>
 
-        {/* Preview Area - Aspect Ratio 9:16 for stories */}
         <div className="p-6 flex justify-center bg-slate-50 relative">
           
-          {/* Muestra un spinner mientras se genera la imagen real */}
           {isCapturing && (
-            <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-slate-50/80 backdrop-blur-sm rounded-t-3xl">
+            <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-slate-50/90 backdrop-blur-sm">
                <div className="w-10 h-10 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin mb-4" />
-               <p className="text-sm font-bold text-slate-600 animate-pulse">Preparando imagen...</p>
+               <p className="text-sm font-bold text-slate-600 animate-pulse">Generando imagen HD...</p>
             </div>
           )}
 
-          {/* Si la imagen ya se generó, mostramos la imagen real. Si no, mostramos el HTML oculto para que html2canvas lo lea */}
           {imageUrl ? (
             <img 
               src={imageUrl} 
               alt="Cuenta regresiva" 
-              className="w-full aspect-[9/16] rounded-3xl shadow-xl object-cover bg-slate-100"
+              className="w-full aspect-[4/5] rounded-3xl shadow-xl object-contain bg-white"
             />
           ) : (
             <div 
               ref={cardRef}
-              className={`relative overflow-hidden w-full aspect-[9/16] rounded-3xl bg-gradient-to-br ${colors.bg} shadow-xl flex flex-col items-center justify-center p-6 text-center`}
+              className="relative overflow-hidden w-full aspect-[4/5] rounded-3xl shadow-xl flex flex-col items-center justify-between p-6 text-center"
+              style={{ background: gradientBg }}
             >
-              {/* Efecto Bokeh / Luces */}
-              <div className={`absolute -top-10 -left-10 w-48 h-48 ${colors.accent1} blur-3xl rounded-full`} />
-              <div className={`absolute bottom-10 -right-10 w-56 h-56 ${colors.accent2} blur-3xl rounded-full`} />
-              <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-white/20 blur-3xl rounded-full transform -translate-x-1/2 -translate-y-1/2" />
+              {/* Overlay suave para simular la luz del mockup */}
+              <div className="absolute inset-0 bg-white/10 mix-blend-overlay"></div>
 
-              <div className="relative z-10 w-full flex flex-col items-center h-full pt-8 pb-4">
-                <h2 className="text-white font-bold tracking-wide text-lg drop-shadow-md mb-auto uppercase">
-                  NOS VAMOS DE PASEO!
-                </h2>
+              {/* Título Superior */}
+              <h2 className="relative z-20 text-white font-extrabold tracking-wide text-xl drop-shadow-md mt-2 uppercase" style={{ textShadow: "0 2px 4px rgba(0,0,0,0.2)" }}>
+                NOS VAMOS DE PASEO!
+              </h2>
 
-                {/* Glassmorphism Card (Estilo Mockup) */}
-                <div className="w-full bg-white/20 backdrop-blur-md border-[1.5px] border-white/50 rounded-[32px] py-10 px-4 shadow-[0_8px_32px_0_rgba(255,255,255,0.1)] flex flex-col items-center relative overflow-hidden">
-                  
-                  {/* Reflejo superior del cristal */}
-                  <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/20 to-transparent" />
+              {/* Glassmorphism Card Exacta al Mockup */}
+              <div className="relative z-20 w-[95%] bg-white/30 border-[1.5px] border-white/60 rounded-[32px] pt-12 pb-6 px-4 shadow-[0_8px_32px_0_rgba(0,0,0,0.15)] flex flex-col items-center mt-2 mb-4">
+                
+                {/* Reflejo blanco del cristal superior (brillo) */}
+                <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/40 to-transparent rounded-t-[32px]" />
 
+                <div className="relative z-30 flex flex-col items-center w-full">
                   {daysLeft !== null && daysLeft > 0 ? (
                     <>
-                      <span className="block text-[110px] font-black text-white drop-shadow-xl leading-[0.85] tracking-tighter">
+                      <span 
+                        className="block text-[130px] font-black text-white leading-[0.75] tracking-tighter"
+                        style={{ textShadow: "0 8px 16px rgba(0,0,0,0.25)" }}
+                      >
                         {daysLeft}
                       </span>
-                      <span className="block text-4xl font-extrabold text-white mt-1 uppercase tracking-widest drop-shadow-lg">
+                      <span 
+                        className="block text-[42px] font-extrabold text-white uppercase tracking-wider mt-4"
+                        style={{ textShadow: "0 4px 12px rgba(0,0,0,0.2)" }}
+                      >
                         DÍAS
                       </span>
                     </>
                   ) : daysLeft === 0 ? (
-                     <span className="block text-5xl font-black text-white drop-shadow-xl uppercase tracking-wide">
+                     <span 
+                        className="block text-5xl font-black text-white uppercase tracking-wide py-10"
+                        style={{ textShadow: "0 8px 16px rgba(0,0,0,0.25)" }}
+                      >
                         ¡ES HOY!
                       </span>
                   ) : (
-                    <span className="block text-2xl font-bold text-white drop-shadow-md">
+                    <span className="block text-2xl font-bold text-white drop-shadow-md py-10">
                       Por definir
                     </span>
                   )}
-
-                  <div className="mt-8 space-y-1.5 w-full relative z-10">
-                    <h1 className="text-xl font-bold text-white drop-shadow-md leading-tight uppercase px-2">
-                      {paseo.name}
-                    </h1>
-                    <p className="text-white/90 font-medium flex items-center justify-center gap-1 text-sm drop-shadow-sm">
-                      📍 {paseo.location || paseo.ubicacion || "Destino sorpresa"}
-                    </p>
-                  </div>
                 </div>
 
-                <div className="mt-auto flex items-center justify-center gap-2 opacity-90 drop-shadow-md">
-                  <span className="text-lg">🌴</span>
-                  <span className="text-white font-bold tracking-widest text-[11px] uppercase">PaseoYa App</span>
+                <div className="mt-8 space-y-1.5 w-full relative z-30">
+                  <h1 className="text-xl font-bold text-white uppercase tracking-wide px-2" style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}>
+                    {paseo.name}
+                  </h1>
+                  <p className="text-white/95 font-medium flex items-center justify-center gap-1 text-sm" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.3)" }}>
+                    📍 {paseo.location || paseo.ubicacion || "Destino sorpresa"}
+                  </p>
                 </div>
+              </div>
+
+              {/* Logo Inferior */}
+              <div className="relative z-20 flex items-center justify-center gap-2 drop-shadow-md mb-2">
+                <span className="text-lg">🌴</span>
+                <span className="text-white font-bold tracking-widest text-xs uppercase" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.3)" }}>PaseoYa App</span>
               </div>
             </div>
           )}
         </div>
 
-        {/* Action Button */}
-        <div className="p-6 bg-white border-t border-slate-50">
+        <div className="p-5 bg-white border-t border-slate-50">
           <button
             onClick={handleShare}
             disabled={isCapturing}
-            className="w-full py-4 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-2xl font-bold text-[16px] flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50 shadow-lg shadow-orange-500/30"
+            className="w-full py-3.5 bg-slate-900 text-white rounded-2xl font-bold text-[16px] flex items-center justify-center gap-2 hover:bg-slate-800 transition-colors disabled:opacity-50 shadow-lg shadow-slate-900/20"
           >
             {isCapturing ? (
               <span className="animate-pulse">Cargando...</span>
@@ -202,8 +205,8 @@ export default function CountdownShareModal({ paseo, winnerDate, onClose }) {
           </button>
           
           {imageUrl && (
-            <p className="text-center text-[11px] text-slate-400 mt-4 px-2">
-              Si el botón no funciona, mantén presionada la imagen de arriba para guardarla o compartirla.
+            <p className="text-center text-xs text-slate-500 mt-4 px-2 font-medium">
+              Si el botón falla, <span className="text-slate-800 font-bold">mantén presionada la imagen</span> arriba para guardarla.
             </p>
           )}
         </div>
