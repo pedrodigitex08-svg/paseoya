@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import { calculateDuration, formatDuration } from "../utils/dateUtils";
 import BottomNav from "../components/layout/BottomNav";
+import CountdownShareModal from "../components/CountdownShareModal";
+import { Camera } from "lucide-react";
 import { PackingModal } from "../components/modals/PackingModal";
 import { RouletteModal } from "../components/modals/RouletteModal";
 
@@ -505,6 +507,15 @@ export default function Dashboard() {
 
       {/* 📱 BARRA DE NAVEGACIÓN INFERIOR (Fija y accesible) 📱 */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-100 shadow-lg">
+        
+      {showCountdownShare && (
+        <CountdownShareModal
+          paseo={paseo}
+          winnerDate={winnerDate}
+          onClose={() => setShowCountdownShare(false)}
+        />
+      )}
+
         <BottomNav />
       </div>
     </div>

@@ -26,6 +26,8 @@ import {
 } from "lucide-react";
 import { usePaseo } from "../store/usePaseoStore";
 import BottomNav from "../components/layout/BottomNav";
+import CountdownShareModal from "../components/CountdownShareModal";
+import { Camera } from "lucide-react";
 import { PackingModal } from "../components/modals/PackingModal";
 import { RouletteModal } from "../components/modals/RouletteModal";
 import { calculateDuration, formatDuration } from "../utils/dateUtils";
@@ -387,6 +389,7 @@ export default function GuestDashboard() {
   const [showRoulette, setShowRoulette] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [showCountdownShare, setShowCountdownShare] = useState(false);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
@@ -953,7 +956,16 @@ export default function GuestDashboard() {
       {showPacking && <PackingModal paseo={paseo} onClose={() => setShowPacking(false)} />}
       {showRoulette && <RouletteModal paseo={paseo} onClose={() => setShowRoulette(false)} />}
 
-      <BottomNav />
+      
+      {showCountdownShare && (
+        <CountdownShareModal
+          paseo={paseo}
+          winnerDate={winnerDate}
+          onClose={() => setShowCountdownShare(false)}
+        />
+      )}
+
+        <BottomNav />
     </div>
   );
 }
