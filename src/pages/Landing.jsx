@@ -30,6 +30,293 @@ import {
   ChevronDown
 } from "lucide-react";
 
+
+// ----------------------------------------------------------------------
+// NUEVAS ANIMACIONES / MOCKUPS PARA FUNCIONALIDADES
+// ----------------------------------------------------------------------
+
+function VotarMockup() {
+  return (
+    <div className="w-full h-full bg-slate-50 p-4 flex flex-col animate-fade-in-up">
+      <div className="mt-8 mb-6 text-center">
+        <h3 className="text-xl font-black text-slate-800">¿Cuándo nos vamos?</h3>
+        <p className="text-xs font-bold text-slate-400">Votación abierta</p>
+      </div>
+      
+      <div className="space-y-4">
+        {/* Option 1 */}
+        <div className="bg-white p-4 rounded-2xl shadow-sm border-2 border-orange-500 relative overflow-hidden group">
+          <div className="absolute top-0 left-0 h-full bg-orange-100 w-[75%] animate-grow-width origin-left" />
+          <div className="relative z-10 flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-orange-500 text-white flex items-center justify-center font-black text-lg shadow-md shadow-orange-500/30">15</div>
+              <div>
+                <p className="font-extrabold text-slate-800 text-sm">Quincena (15 Oct)</p>
+                <p className="text-[11px] text-orange-600 font-bold">75% (Ganando)</p>
+              </div>
+            </div>
+            <div className="flex -space-x-2">
+              <div className="w-7 h-7 rounded-full bg-blue-500 border-2 border-white shadow-sm z-30" />
+              <div className="w-7 h-7 rounded-full bg-pink-500 border-2 border-white shadow-sm z-20" />
+              <div className="w-7 h-7 rounded-full bg-emerald-500 border-2 border-white shadow-sm z-10" />
+            </div>
+          </div>
+        </div>
+        
+        {/* Option 2 */}
+        <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden">
+          <div className="absolute top-0 left-0 h-full bg-slate-100 w-[25%] animate-grow-width origin-left animation-delay-200" />
+          <div className="relative z-10 flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center font-bold text-lg">29</div>
+              <div>
+                <p className="font-bold text-slate-700 text-sm">Fin de mes (29 Oct)</p>
+                <p className="text-[11px] text-slate-400 font-bold">25% de los votos</p>
+              </div>
+            </div>
+            <div className="flex -space-x-2">
+               <div className="w-7 h-7 rounded-full bg-amber-500 border-2 border-white shadow-sm" />
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div className="mt-auto mb-6 mx-2 bg-slate-900 text-white p-4 rounded-2xl flex items-center justify-center gap-2 font-bold shadow-xl shadow-slate-900/20 hover:scale-105 transition-transform cursor-pointer">
+         <PlusCircle size={18} />
+         Proponer Fecha
+      </div>
+    </div>
+  );
+}
+
+function CountdownMockup() {
+  const gradientBg = `
+    radial-gradient(circle at 0% 0%, #00d2ff 0%, transparent 60%),
+    radial-gradient(circle at 100% 0%, #ff8a00 0%, transparent 60%),
+    radial-gradient(circle at 0% 100%, #e100ff 0%, transparent 60%),
+    radial-gradient(circle at 100% 100%, #00d2ff 0%, transparent 60%),
+    #ff9a9e
+  `;
+
+  return (
+    <div className="w-full h-full flex flex-col relative animate-fade-in-up bg-black">
+      {/* Background Image of the post */}
+      <div className="absolute inset-0 z-0 opacity-90" style={{ background: gradientBg }}>
+         <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-white/20 blur-3xl rounded-full" />
+         <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-pink-400/30 blur-3xl rounded-full" />
+      </div>
+      
+      {/* Top UI */}
+      <div className="relative z-20 flex justify-between items-center p-4 pt-6">
+         <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur flex items-center justify-center"><X size={16} className="text-white"/></div>
+         <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur flex items-center justify-center"><span className="text-white font-bold text-xs">Aa</span></div>
+      </div>
+
+      <div className="relative z-10 flex-1 p-6 flex flex-col items-center justify-center -mt-8">
+        <h2 className="text-white font-extrabold tracking-widest text-sm drop-shadow-md mb-4" style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}>NOS VAMOS DE PASEO!</h2>
+        
+        <div className="w-full bg-white/20 border-2 border-white/60 rounded-[32px] py-8 flex flex-col items-center shadow-2xl relative overflow-hidden backdrop-blur-sm transform hover:scale-105 transition-transform duration-500">
+           <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/40 to-transparent rounded-t-[32px]" />
+           <span className="text-[90px] font-black text-white leading-[0.8] tracking-tighter" style={{ textShadow: "0 8px 16px rgba(0,0,0,0.3)" }}>15</span>
+           <span className="text-2xl font-extrabold text-white tracking-widest mt-2" style={{ textShadow: "0 4px 12px rgba(0,0,0,0.3)" }}>DÍAS</span>
+           
+           <div className="mt-6 text-center z-10 w-full px-4">
+              <h1 className="text-sm font-bold text-white uppercase" style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}>Viaje a la Playa</h1>
+              <p className="text-[11px] text-white/90 font-medium mt-1">📍 Santa Marta</p>
+           </div>
+        </div>
+      </div>
+      
+      {/* Instagram fake UI overlay */}
+      <div className="absolute bottom-0 w-full px-4 pb-6 pt-12 bg-gradient-to-t from-black/80 to-transparent flex justify-between items-end z-20">
+         <div className="flex flex-col gap-1 items-center">
+             <div className="w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-slate-800">
+                 <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" className="w-full h-full object-cover" />
+             </div>
+             <span className="text-[10px] text-white font-medium">Historia</span>
+         </div>
+         <div className="bg-white text-black px-6 py-3 rounded-full text-sm font-bold flex items-center gap-2 hover:scale-105 transition-transform cursor-pointer shadow-xl">
+            Tu historia <ChevronRight size={16} />
+         </div>
+      </div>
+    </div>
+  );
+}
+
+function FuncionalidadesSection() {
+  const [activeTab, setActiveTab] = React.useState(0);
+
+  const features = [
+    {
+      id: 'votar',
+      icon: <CalendarDays size={18} />,
+      title: 'Votaciones Democráticas',
+      subtitle: 'Nadie impone nada, la mayoría decide.',
+      description: 'Propón múltiples fechas, destinos o presupuestos y deja que el grupo decida. Se acabaron los largos debates caóticos por WhatsApp; aquí todo es claro y visual.',
+      points: ['Resultados en tiempo real', 'Votación anónima o pública', 'Cero conflictos grupales'],
+      mockup: <VotarMockup />
+    },
+    {
+      id: 'vaca',
+      icon: <Calculator size={18} />,
+      title: 'La Vaca Inteligente',
+      subtitle: 'Las cuentas claras y el chocolate espeso.',
+      description: 'Ingresa el costo del alquiler de la finca, los pasajes o el mercado, y la app divide automáticamente. ¿Alguien toma licor y otros no? Agrégale un recargo individual sin complicarte.',
+      points: ['Cálculo automático de cuotas', 'Recargos individuales (ej. Licor)', 'Saldos personales (Quién le debe a quién)'],
+      mockup: (
+         <div className="w-full h-full bg-slate-100 flex items-center justify-center p-4">
+           <div className="w-full max-w-sm"><VacaMockup /></div>
+         </div>
+      )
+    },
+    {
+      id: 'logistica',
+      icon: <ShoppingCart size={18} />,
+      title: 'Logística y Mercado',
+      subtitle: '¿Quién lleva el hielo? ¿Quién lleva la carne?',
+      description: 'Crea la lista de mercado interactiva y asigna responsables. Todos sabrán exactamente qué tienen que comprar y qué falta por conseguir antes del viaje.',
+      points: ['Checklists interactivos', 'Asignación de responsables', 'Sincronización en la nube'],
+      mockup: (
+         <div className="w-full h-full bg-slate-50 flex items-center justify-center p-4">
+           <div className="w-full max-w-sm"><LogisticaMockup /></div>
+         </div>
+      )
+    },
+    {
+      id: 'countdown',
+      icon: <Camera size={18} />,
+      title: 'Modo Instagram',
+      subtitle: 'Genera expectativa y emoción.',
+      description: 'Con un solo toque, crea una cuenta regresiva con diseño profesional (Glassmorphism) lista para compartir en las historias de Instagram o Facebook de todo el grupo.',
+      points: ['Diseño generado en tiempo real', 'Fondos adaptables al tipo de paseo', 'Exportación nativa HD'],
+      mockup: <CountdownMockup />
+    },
+    {
+      id: 'invitados',
+      icon: <Users size={18} />,
+      title: 'Portal de Invitados',
+      subtitle: 'Cero fricción para tus amigos.',
+      description: 'Tus invitados no necesitan descargar aplicaciones pesadas ni crear cuentas tediosas. Les pasas un link mágico de WhatsApp, ponen su nombre y ya están adentro.',
+      points: ['Sin contraseñas (Link Mágico)', 'Optimizado para navegadores móviles', 'Actualizaciones en vivo'],
+      mockup: (
+         <div className="w-full h-full bg-slate-900 flex items-center justify-center p-4">
+           <div className="w-full max-w-sm scale-[0.85] origin-center"><LinkMockup /></div>
+         </div>
+      )
+    }
+  ];
+
+  return (
+    <section id="funcionalidades" className="py-24 bg-slate-50 relative border-t border-slate-200 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
+        
+        {/* Header */}
+        <div className="text-center mb-16 space-y-4">
+          <div className="inline-block px-4 py-1.5 bg-orange-100 text-orange-600 font-bold rounded-full text-xs uppercase tracking-widest mb-2 shadow-sm">
+            El Arsenal del Organizador
+          </div>
+          <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
+            Descubre las Funcionalidades
+          </h2>
+          <p className="text-slate-500 text-xl max-w-2xl mx-auto font-medium">
+            Todo lo que necesitas para que tu paseo pase de ser "solo una idea" a una realidad perfectamente organizada.
+          </p>
+        </div>
+
+        {/* Layout */}
+        <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
+          
+          {/* Left: TABS AND INFO */}
+          <div className="w-full lg:w-1/2 flex flex-col gap-6 order-2 lg:order-1">
+            
+            {/* Tabs Móvil (Scroll Horizontal) & Desktop (Wrap) */}
+            <div className="flex overflow-x-auto lg:flex-wrap gap-2 pb-4 scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0">
+              {features.map((f, i) => (
+                <button 
+                  key={i} 
+                  onClick={() => setActiveTab(i)}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl font-bold text-sm whitespace-nowrap transition-all duration-300 border-2 ${
+                    activeTab === i 
+                      ? 'bg-slate-900 text-white border-slate-900 shadow-xl shadow-slate-900/20 scale-105' 
+                      : 'bg-white text-slate-500 border-slate-100 hover:border-slate-300 hover:text-slate-700'
+                  }`}
+                >
+                  {f.icon} {f.title}
+                </button>
+              ))}
+            </div>
+
+            {/* Tarjeta de Información Activa */}
+            <div className="bg-white p-8 md:p-10 rounded-[32px] border border-slate-100 shadow-2xl shadow-slate-200/50 min-h-[380px] flex flex-col justify-center relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-orange-50 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2" />
+              
+              <div className="relative z-10">
+                 <div className="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mb-6">
+                    {features[activeTab].icon}
+                 </div>
+                 <h3 className="text-3xl md:text-4xl font-black text-slate-900 mb-2 leading-tight">
+                    {features[activeTab].title}
+                 </h3>
+                 <h4 className="text-lg font-bold text-orange-500 mb-4">
+                    {features[activeTab].subtitle}
+                 </h4>
+                 <p className="text-slate-600 text-lg leading-relaxed mb-8">
+                    {features[activeTab].description}
+                 </p>
+                 
+                 <ul className="space-y-4">
+                    {features[activeTab].points.map((pt, i) => (
+                      <li key={i} className="flex items-center gap-3 text-slate-800 font-bold text-sm md:text-base animate-fade-in-up" style={{ animationDelay: `${i * 100}ms` }}>
+                        <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                          <Check size={14} strokeWidth={4} />
+                        </div>
+                        {pt}
+                      </li>
+                    ))}
+                 </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: PHONE MOCKUP (VIDEOS / GRAPHICS) */}
+          <div className="w-full lg:w-1/2 flex justify-center order-1 lg:order-2">
+             <div className="relative w-full max-w-[320px] lg:max-w-[360px] aspect-[9/19] bg-slate-900 rounded-[54px] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] border-[10px] border-slate-900 overflow-hidden ring-4 ring-slate-200 transform transition-transform hover:scale-[1.02] duration-500">
+               
+               {/* Pantalla del Celular */}
+               <div className="absolute inset-0 bg-white overflow-hidden rounded-[44px]">
+                 
+                 {/* Aquí se inyecta el Mockup interactivo / visual de la funcionalidad */}
+                 <div className="w-full h-full transition-opacity duration-500" key={activeTab}>
+                    {features[activeTab].mockup}
+                 </div>
+
+                 {/* Placeholder futuro para Video: */}
+                 {/* Si tuvieras videos reales .mp4 de la app grabada, lo pondrías aquí así: */}
+                 {/* <video src={`/videos/${features[activeTab].id}.mp4`} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-50 pointer-events-none" /> */}
+                 
+               </div>
+               
+               {/* Dynamic Island / Notch Moderno */}
+               <div className="absolute top-2 left-1/2 -translate-x-1/2 w-[120px] h-[30px] bg-black rounded-full z-[100] flex justify-between items-center px-3 shadow-inner">
+                  <div className="w-2 h-2 rounded-full bg-slate-800" />
+                  <div className="w-3 h-3 rounded-full bg-slate-800 border-[3px] border-slate-900 relative overflow-hidden">
+                     <div className="absolute inset-0 bg-blue-500/20 rounded-full" />
+                  </div>
+               </div>
+               
+               {/* Botones Físicos Laterales */}
+               <div className="absolute top-32 -left-[14px] w-[4px] h-12 bg-slate-800 rounded-l-md" />
+               <div className="absolute top-48 -left-[14px] w-[4px] h-12 bg-slate-800 rounded-l-md" />
+               <div className="absolute top-32 -right-[14px] w-[4px] h-16 bg-slate-800 rounded-r-md" />
+             </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Landing() {
 
   const navigate = useNavigate();
@@ -162,8 +449,8 @@ export default function Landing() {
             </span>
           </div>
           <div className="flex items-center gap-6">
-            <a href="#how-it-works" className="text-sm font-semibold text-slate-500 hover:text-orange-600 hidden md:block transition-colors">
-              Descubre las Funciones
+            <a href="#funcionalidades" className="text-sm font-semibold text-slate-500 hover:text-orange-600 hidden md:block transition-colors">
+              Ver Funcionalidades
             </a>
             <button
               onClick={signInWithGoogle}
@@ -208,111 +495,8 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* 🗺️ THE JOURNEY (DETAILED 5 STEPS) */}
-      <section id="how-it-works" className="py-24 bg-white relative border-t border-orange-100">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-28 space-y-4">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
-              Así funciona la magia.
-            </h2>
-            <p className="text-slate-500 text-xl max-w-2xl mx-auto">
-              Conoce el paso a paso detallado de todas las herramientas exclusivas que te ofrece PaseoYa.
-            </p>
-          </div>
-
-          <div className="space-y-40">
-            
-            {/* 1. CREACIÓN DEL PASEO */}
-            <FeatureBlock 
-              step="1"
-              align="right"
-              badge="Inicio Rápido"
-              badgeColor="text-orange-600 bg-orange-100"
-              title="Creación del Paseo (El Anfitrión)"
-              content={
-                <ul className="space-y-4 text-slate-600 font-medium">
-                  <li><strong className="text-slate-900">Sin registros molestos:</strong> No necesitas correos pesados ni contraseñas. Un formulario directo.</li>
-                  <li><strong className="text-slate-900">Nombre y Destino:</strong> Ej. "Desenguayabe en Melgar". Ponle el tono a tu evento desde el inicio.</li>
-                  <li><strong className="text-slate-900">Presupuesto Base:</strong> Crucial. Aquí pones el costo fijo (ej. el alquiler de la finca). La app lo usará mágicamente después para dividirlo entre los que asistan.</li>
-                  <li><strong className="text-slate-900">Foto de Portada:</strong> Sube una imagen espectacular para enamorar a tus invitados desde el primer clic.</li>
-                </ul>
-              }
-              visual={<CreacionMockup />}
-            />
-
-            {/* 2. LINK MÁGICO Y RSVP */}
-            <FeatureBlock 
-              step="2"
-              align="left"
-              badge="Invitación & RSVP"
-              badgeColor="text-amber-600 bg-amber-100"
-              title="El Link Mágico y Confirmación"
-              content={
-                <ul className="space-y-4 text-slate-600 font-medium">
-                  <li><strong className="text-slate-900">Compartir el Link:</strong> El anfitrión copia la URL única y la lanza al grupo de WhatsApp.</li>
-                  <li><strong className="text-slate-900">Experiencia del Invitado:</strong> Al abrir el link, no ven una pantalla aburrida. Son recibidos por una Tarjeta de Invitación Premium.</li>
-                  <li><strong className="text-slate-900">Confirmación (RSVP) Express:</strong> El invitado escribe su nombre, toca "Confirmar" y el sistema lo añade automáticamente a la lista oficial de la base de datos.</li>
-                </ul>
-              }
-              visual={<LinkMockup />}
-            />
-
-            {/* 3. VOTACIONES */}
-            <FeatureBlock 
-              step="3"
-              align="right"
-              badge="Democracia"
-              badgeColor="text-emerald-600 bg-emerald-100"
-              title="Votaciones Transparentes"
-              content={
-                <ul className="space-y-4 text-slate-600 font-medium">
-                  <li><strong className="text-slate-900">Sugerir Fechas y Lugares:</strong> Evita el caos en el chat. Cualquier invitado puede proponer fechas en el calendario o destinos como "Cabaña en Guatapé".</li>
-                  <li><strong className="text-slate-900">Votos interactivos:</strong> Voten con "Sí/No" o manitas arriba/abajo (👍👎).</li>
-                  <li><strong className="text-slate-900">¿Quién votó?:</strong> Debajo de cada opción aparecen las iniciales en circulitos. Pasa el mouse y mira exactamente quién apoyó qué opción.</li>
-                  <li><strong className="text-slate-900">Coronar al Ganador:</strong> El anfitrión cierra la votación y el sistema bloquea y marca en amarillo brillante (con una corona 👑) la decisión oficial.</li>
-                </ul>
-              }
-              visual={<VotacionMockup />}
-            />
-
-            {/* 4. LOGÍSTICA */}
-            <FeatureBlock 
-              step="4"
-              align="left"
-              badge="Organización"
-              badgeColor="text-sky-600 bg-sky-100"
-              title="Logística (Armando el plan)"
-              content={
-                <ul className="space-y-4 text-slate-600 font-medium">
-                  <li><strong className="text-slate-900">Menú Colaborativo:</strong> Una lista de mercado donde agregan "Cervezas", ponen el precio y las marcan con check (✅). ¡El total se va directo a La Vaca para dividirse!</li>
-                  <li><strong className="text-slate-900">Transporte (Los Carros):</strong> Registra vehículos, cupos libres y costo de gasolina.</li>
-                  <li><strong className="text-slate-900">Justicia pura:</strong> Los invitados separan su cupo, y la genialidad es que el costo de la gasolina se divide SÓLO entre los ocupantes de ese vehículo.</li>
-                </ul>
-              }
-              visual={<LogisticaMockup />}
-            />
-
-            {/* 5. LA VACA */}
-            <FeatureBlock 
-              step="5"
-              align="right"
-              badge="Finanzas"
-              badgeColor="text-rose-600 bg-rose-100"
-              title="La Vaca (Cuentas Claras)"
-              content={
-                <ul className="space-y-4 text-slate-600 font-medium">
-                  <li><strong className="text-slate-900">Resumen Individual (La Factura):</strong> Al desplegar la flecha, cada invitado ve de dónde sale su cuota: Base dividida + Mercado dividido + Su asiento en el Transporte.</li>
-                  <li><strong className="text-slate-900">Control de Pagos:</strong> Casillas (checkbox) para marcar quién ya transfirió, poniéndose en verde. (Todo se auto-ajusta si alguien cancela).</li>
-                  <li><strong className="text-slate-900">Gastos Extras:</strong> Registra compras imprevistas grupales ("Se acabó el hielo por $20k"). Se suma y divide entre todos automáticamente.</li>
-                  <li><strong className="text-slate-900">Deudas Personales 1 a 1:</strong> "María le debe $50k a Carlos". Se anota para que no se hagan los locos, sin afectar la Vaca grupal.</li>
-                </ul>
-              }
-              visual={<VacaMockup />}
-            />
-
-          </div>
-        </div>
-      </section>
+      {/* FUNCIONALIDADES SECTION */}
+      <FuncionalidadesSection />
 
       {/* 🏁 CTA FOOTER */}
       <section className="relative py-32 overflow-hidden bg-slate-900">
