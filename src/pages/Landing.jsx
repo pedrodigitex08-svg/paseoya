@@ -3,32 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { usePaseo } from "../store/usePaseoStore";
 import { supabase } from "../store/supabase";
 import { useState, useEffect } from "react";
-import { LogOut, Plus, MapPin } from "lucide-react";
-import {
-  Map,
-  Calculator,
-  Vote,
-  Car,
-  CheckCircle2,
-  ArrowRight,
-  Sparkles,
-  Heart,
-  ChevronRight,
-  ThumbsUp,
-  ThumbsDown,
-  ShoppingCart,
-  CheckSquare,
-  Ticket,
-  Receipt,
-  Crown,
-  Users,
-  Image as ImageIcon,
-  Banknote,
-  CalendarDays,
-  PenTool,
-  HandCoins,
-  ChevronDown
-} from "lucide-react";
+import { ArrowRight, Banknote, Calculator, CalendarDays, Camera, Car, Check, CheckCircle2, CheckSquare, ChevronDown, ChevronRight, Crown, HandCoins, Heart, Image as ImageIcon, LogOut, Map, MapPin, PenTool, Plus, PlusCircle, Receipt, ShoppingCart, Sparkles, ThumbsDown, ThumbsUp, Ticket, Users, Vote, X } from "lucide-react";
+
+
+
 
 
 // ----------------------------------------------------------------------
