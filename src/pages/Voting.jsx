@@ -255,9 +255,13 @@ function PlaceVoteCard({
       <div
         className="relative px-4 py-5"
         style={{
-          background: isWinner
+          background: place.imageUrl 
+            ? `linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.9)), url(${place.imageUrl})`
+            : isWinner
             ? "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)"
             : `linear-gradient(135deg, ${colors.from} 0%, ${colors.to} 100%)`,
+          backgroundSize: "cover",
+          backgroundPosition: "center"
         }}
       >
         {!isVotingLocked && (
@@ -292,6 +296,16 @@ function PlaceVoteCard({
       </div>
 
       <div className="bg-white px-4 py-3">
+        {place.link && (
+          <a 
+            href={place.link} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 mb-2.5 text-xs font-bold text-teal-600 bg-teal-50 px-3 py-1.5 rounded-lg hover:bg-teal-100 transition-colors"
+          >
+            <Link2 size={12} /> Ver alojamiento ↗
+          </a>
+        )}
         <p className="text-slate-500 text-sm leading-relaxed">
           {place.description}
         </p>
@@ -477,10 +491,28 @@ function AddPlaceForm({ onSubmit, onCancel }) {
   const [description, setDesc] = useState("");
   const [budget, setBudget] = useState("");
   const [location, setLocation] = useState("");
+  const [link, setLink] = useState("");
+  const [isExtractingImage, setIsExtractingImage] = useState(false);
   const [duration, setDuration] = useState(86400000);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!name.trim()) return;
+    
+    let imageUrl = null;
+    if (link.trim()) {
+      setIsExtractingImage(true);
+      try {
+        const res = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(link.trim())}`);
+        const data = await res.json();
+        if (data.status === 'success' && data.data?.image?.url) {
+          imageUrl = data.data.image.url;
+        }
+      } catch (e) {
+        console.error("Error fetching microlink:", e);
+      }
+      setIsExtractingImage(false);
+    }
+
     onSubmit(
       {
         name: name.trim(),
@@ -488,6 +520,8 @@ function AddPlaceForm({ onSubmit, onCancel }) {
         description: description.trim(),
         budget: parseInt(budget.replace(/\D/g, "")) || 0,
         location: location.trim(),
+        link: link.trim(),
+        imageUrl: imageUrl,
       },
       duration
     );
@@ -495,6 +529,7 @@ function AddPlaceForm({ onSubmit, onCancel }) {
     setDesc("");
     setBudget("");
     setLocation("");
+    setLink("");
   };
 
   return (
@@ -566,6 +601,19 @@ function AddPlaceForm({ onSubmit, onCancel }) {
             className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-teal-400 transition-colors placeholder:text-slate-300"
           />
         </div>
+
+      <div>
+        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide block mb-1">
+          Link de Airbnb / Booking (Opcional)
+        </label>
+        <input
+          type="url"
+          value={link}
+          onChange={(e) => setLink(e.target.value)}
+          placeholder="https://www.airbnb.com/rooms/..."
+          className="w-full border-2 border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-800 outline-none focus:border-teal-400 transition-colors placeholder:text-slate-300"
+        />
+      </div>
         <div>
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide block mb-1">
             Presupuesto $
