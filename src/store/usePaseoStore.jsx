@@ -200,11 +200,7 @@ export const usePaseo = create(
             if (!slug) return null;
 
             const { data, error } = await supabase
-              .from("paseos")
-              .select("data")
-              .eq("short_id", slug)
-              .single(); // .single() asegura devolver 1 solo objeto, y lanza error (ej. PGRST116) si no encuentra nada
-
+              .rpc("get_paseo_by_slug", { p_slug: slug }).single();
             if (error) {
               console.warn(
                 "⚠️ Paseo no encontrado o error en Supabase:",
@@ -905,4 +901,5 @@ export const usePaseo = create(
 export function PaseoProvider({ children }) {
   return children;
 }
+
 
