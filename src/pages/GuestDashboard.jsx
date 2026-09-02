@@ -391,6 +391,14 @@ export default function GuestDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [showCountdownShare, setShowCountdownShare] = useState(false);
   const [notFound, setNotFound] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  useEffect(() => {
+    if (!localStorage.getItem("hasSeenGuestTooltip")) {
+      const timer = setTimeout(() => setShowTooltip(true), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchPaseo = async () => {

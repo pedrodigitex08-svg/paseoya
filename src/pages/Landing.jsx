@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { usePaseo } from "../store/usePaseoStore";
+import Onboarding from "../components/Onboarding";
 import { supabase } from "../store/supabase";
 import { useState, useEffect } from "react";
 import { ArrowRight, Banknote, Calculator, CalendarDays, Camera, Car, Check, CheckCircle2, CheckSquare, ChevronDown, ChevronRight, Crown, HandCoins, Heart, Image as ImageIcon, LogOut, Map, MapPin, PenTool, Plus, PlusCircle, Receipt, ShoppingCart, Sparkles, ThumbsDown, ThumbsUp, Ticket, Users, Vote, X } from "lucide-react";
@@ -301,6 +302,13 @@ export default function Landing() {
   const { state, signInWithGoogle, signOut, loadPaseoFromCloud } = usePaseo();
   const [myPaseos, setMyPaseos] = useState([]);
   const [loadingPaseos, setLoadingPaseos] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    if (state.session && !localStorage.getItem("hasSeenOnboarding")) {
+      setShowOnboarding(true);
+    }
+  }, [state.session]);
 
   // Fetch paseos from Supabase when session exists
   useEffect(() => {
@@ -323,6 +331,10 @@ export default function Landing() {
     };
     fetchMyPaseos();
   }, [state.session]);
+
+  if (showOnboarding) {
+    return <Onboarding onComplete={() => setShowOnboarding(false)} />;
+  }
 
   if (state.session) {
     return (
