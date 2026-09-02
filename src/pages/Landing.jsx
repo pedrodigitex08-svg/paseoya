@@ -494,7 +494,7 @@ export default function Landing() {
         </div>
       </section>
       
-      <footer className="bg-slate-950 py-12 border-t border-slate-900 text-center">
+      <footer className="bg-slate-950 py-12 border-t border-slate-900 text-center flex flex-col items-center gap-4">
         <div className="text-sm font-semibold text-slate-500 flex items-center justify-center gap-2">
           PaseoYa © {new Date().getFullYear()} • Hecho con <Heart size={14} className="text-orange-500 fill-orange-500" /> para salvar amistades.
         </div>
