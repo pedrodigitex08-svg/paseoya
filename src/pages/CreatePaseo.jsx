@@ -130,7 +130,7 @@ export default function CreatePaseo() {
 
 
   // 🛠️ Extracción segura de la función desde Zustand
-  const savePaseoToCloud = usePaseo((state) => state.savePaseoToCloud);
+  const createPaseoInCloud = usePaseo((state) => state.createPaseoInCloud);
 
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -188,16 +188,16 @@ export default function CreatePaseo() {
 
     try {
       // 🛡️ Validación por si Antigravity omitió la función en el Store
-      if (typeof savePaseoToCloud !== "function") {
+      if (typeof createPaseoInCloud !== "function") {
         alert(
-          "¡Alerta de Arquitecto! 🛑 La función savePaseoToCloud no está definida en tu usePaseoStore.jsx. Por favor, verifica ese archivo."
+          "¡Alerta de Arquitecto! 🛑 La función createPaseoInCloud no está definida en tu usePaseoStore.jsx. Por favor, verifica ese archivo."
         );
         setIsSubmitting(false);
         return;
       }
 
       // 1. Guardamos en la nube ANTES de redirigir
-      await savePaseoToCloud(nuevoPaseo);
+      await createPaseoInCloud(nuevoPaseo);
 
       // 2. Guardamos en el estado local de Zustand manualmente
       usePaseo.setState((store) => ({

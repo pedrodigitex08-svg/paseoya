@@ -518,7 +518,7 @@ function AddPlaceForm({ onSubmit, onCancel }) {
         name: name.trim(),
         emoji,
         description: description.trim(),
-        budget: parseInt(budget.replace(/\D/g, "")) || 0,
+        budget: Number(budget) || 0,
         location: location.trim(),
         link: link.trim(),
         imageUrl: imageUrl,

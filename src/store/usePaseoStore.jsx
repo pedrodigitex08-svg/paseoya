@@ -288,7 +288,7 @@ export const usePaseo = create(
           const currentActive = get().state.activePaseo;
           if (currentActive && currentActive.id === id) {
             try {
-              await get().savePaseoToCloud(currentActive);
+              await get().updatePaseoInCloud(currentActive);
             } catch (error) {
               console.error("Error guardando actualización en la nube:", error);
             }
