@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { usePaseo } from "../store/usePaseoStore";
 import { supabase } from "../store/supabase";
@@ -497,6 +497,11 @@ export default function Landing() {
       <footer className="bg-slate-950 py-12 border-t border-slate-900 text-center flex flex-col items-center gap-4">
         <div className="text-sm font-semibold text-slate-500 flex items-center justify-center gap-2">
           PaseoYa © {new Date().getFullYear()} • Hecho con <Heart size={14} className="text-orange-500 fill-orange-500" /> para salvar amistades.
+        </div>
+        <div className="flex gap-6">
+          <Link to="/privacidad" className="text-xs text-slate-500 hover:text-orange-500 transition-colors underline underline-offset-4">
+            Política de Privacidad y Tratamiento de Datos
+          </Link>
         </div>
       </footer>
     </div>
