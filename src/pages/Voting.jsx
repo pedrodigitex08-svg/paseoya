@@ -13,6 +13,7 @@ import {
   ChevronLeft,
   Sparkles,
   X,
+  Link2,
 } from "lucide-react";
 import { usePaseo } from "../store/usePaseoStore";
 import BottomNav from "../components/layout/BottomNav";
