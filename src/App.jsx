@@ -12,6 +12,7 @@ import LaVaca from "./pages/LaVaca";
 import GuestInvite from "./pages/GuestInvite";
 import GuestRecovery from "./pages/GuestRecovery";
 import Landing from "./pages/Landing";
+import Privacidad from "./pages/Privacidad";
 
 
 function AuthListener() {
@@ -31,6 +32,7 @@ export default function App() {
         <Routes>
           {/* Pantalla 0: Landing Page */}
           <Route path="/" element={<Landing />} />
+          <Route path="/privacidad" element={<Privacidad />} />
 
           {/* Pantalla 1: Creación */}
           <Route path="/crear" element={<CreatePaseo />} />
@@ -63,3 +65,4 @@ export default function App() {
     </PaseoProvider>
   );
 }
+
