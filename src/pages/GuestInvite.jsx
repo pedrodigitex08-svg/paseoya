@@ -91,7 +91,7 @@ function SuccessToast({ name, visible }) {
 export default function GuestInvite() {
   const navigate = useNavigate();
   const { slug } = useParams();
-  const { state, loadPaseoFromCloud, savePaseoToCloud, addParticipant, setCurrentUser } =
+  const { state, loadPaseoFromCloud, updatePaseoInCloud, addParticipant, setCurrentUser } =
     usePaseo();
 
   console.log("DEBUG: Slug recibido:", slug);
@@ -225,8 +225,8 @@ export default function GuestInvite() {
       const updatedPaseo = usePaseo.getState().state.activePaseo;
 
       // 3. Guardamos el paseo en la nube con el nuevo invitado antes de avanzar
-      if (updatedPaseo && typeof savePaseoToCloud === "function") {
-        await savePaseoToCloud(updatedPaseo);
+      if (updatedPaseo && typeof updatePaseoInCloud === "function") {
+        await updatePaseoInCloud(updatedPaseo);
       }
 
       setConfirming(false);

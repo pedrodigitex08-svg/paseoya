@@ -144,7 +144,7 @@ export const usePaseo = create(
 
         // 2. Dispara el guardado en la nube en segundo plano silenciosamente
         try {
-          await get().savePaseoToCloud(updatedPaseo);
+          await get().updatePaseoInCloud(updatedPaseo);
         } catch (error) {
           console.error("Error al sincronizar acción con la nube:", error);
         }
@@ -178,23 +178,31 @@ export const usePaseo = create(
           set((store) => ({ state: { ...store.state, session: null } }));
         },
 
-        savePaseoToCloud: async (paseoData) => {
-          try {
-            const { error } = await supabase
-              .from("paseos")
-              .upsert(
-                { short_id: paseoData.slug, data: paseoData },
-                { onConflict: "short_id" }
-              );
-
-            if (error) throw error;
-            return true;
-          } catch (error) {
-            console.error("🔥 Error de Arquitecto - Falló Supabase:", error);
-            throw error;
-          }
-        },
-
+        createPaseoInCloud: async (paseoData) => {
+            try {
+              const { error } = await supabase
+                .from("paseos")
+                .insert([{ short_id: paseoData.slug, data: paseoData }]);
+              if (error) throw error;
+              return true;
+            } catch (error) {
+              console.error("Error creating in cloud:", error);
+              throw error;
+            }
+          },
+          updatePaseoInCloud: async (paseoData) => {
+            try {
+              const { error } = await supabase
+                .from("paseos")
+                .update({ data: paseoData })
+                .eq("short_id", paseoData.slug);
+              if (error) throw error;
+              return true;
+            } catch (error) {
+              console.error("Error updating in cloud:", error);
+              throw error;
+            }
+          },
         loadPaseoFromCloud: async (slug) => {
           try {
             if (!slug) return null;
